@@ -1,0 +1,39 @@
+.background {
+  width: 100vw;
+  height: 100vh;
+  background-image: linear-gradient(to top right, #212121, #323232);
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.rubiks-cube {
+  width: 100vw;
+  height: 75vh;
+}
+
+.rotate-btns {
+  width: 40vw;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.rotate-btns .btn-group button {
+  width: 3rem;
+  height: 2.5rem;
+
+  border: none;
+  background: none;
+  color: white;
+  font-size: 1.2em;
+  text-align: center;
+  border: 1px #7366ff solid;
+}
+
+.rotate-btns .btn-group button:hover {
+  border: none;
+  background-image: linear-gradient(to top right, #7366ff, #a972cb);
+}
