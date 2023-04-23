@@ -145,6 +145,7 @@ const Cube = (props) => {
         }
         // update the state of the object
         setCubeColors(updatedCubeColors);
+        props.incrementCubesUpdated();
       }
       isFirstRender.current = false;
     }
@@ -154,7 +155,7 @@ const Cube = (props) => {
     if (cubeRef.current) {
       cube_position.current = cubeRef.current.position;
     }
-  }, cubeRef.current?.position);
+  }, [cubeRef.current?.position]);
 
   return (
     <animated.mesh

@@ -12,7 +12,8 @@ function RubiksCube(props) {
   const [x_offset, y_offset] = [0.45, -0.75];
   const prevSide = useRef(null);
   const [sideUpdate, toggleSideUpdate] = useState(false);
-  const [cubeUpdate, toggleCubeUpdate] = useState(false);
+  const [cubesUpdated, setCubesUpdated] = useState(0);
+  const isMounted = useRef(false);
 
   /* cube refs */
   const RubiksCubeRef = useRef(null);
@@ -44,6 +45,16 @@ function RubiksCube(props) {
     config: { friction: 20 },
   }));
 
+  const bind = useGesture({
+    onDrag: ({ offset: [x, y] }) => {
+      setCube({
+        rotation: [y / aspect + xPos.current, x / aspect + yPos.current, 0],
+      });
+    },
+    onHover: ({ hovering }) =>
+      setCube({ scale: hovering ? [1.05, 1.05, 1.05] : [1, 1, 1] }),
+  });
+
   // add correct cubes to active side
   useEffect(() => {
     if (props.activeSide === "") return;
@@ -62,38 +73,18 @@ function RubiksCube(props) {
     toggleSideUpdate(!sideUpdate);
   }, [props.activeSide]);
 
-  // const [frontSpring, setFront] = useSpring(() => ({
-  //   scale: [1, 1, 1],
-  //   position: [0, 0, 0],
-  //   rotation: [0, 0, 0],
-  //   config: { friction: 20 },
-  // }));
+  useEffect(() => {
+    if (isMounted.current) {
+      if (cubesUpdated === 9) {
+        props.setMoveDone(true);
+        setCubesUpdated(0);
+      }
+    }
+  }, [cubesUpdated]);
 
-  // currently not used, rotates entire cube 90 degrees CCW
-  // useEffect(() => {
-  //   if (isMounted.current) {
-  //     setCube({
-  //       rotation: [
-  //         cubeRef.current.rotation.x,
-  //         cubeRef.current.rotation.y + Math.PI / 2,
-  //         0,
-  //       ],
-  //     });
-  //     yPos.current += Math.PI / 2;
-  //   } else {
-  //     isMounted.current = true;
-  //   }
-  // }, []);
-
-  const bind = useGesture({
-    onDrag: ({ offset: [x, y] }) => {
-      setCube({
-        rotation: [y / aspect + xPos.current, x / aspect + yPos.current, 0],
-      });
-    },
-    onHover: ({ hovering }) =>
-      setCube({ scale: hovering ? [1.05, 1.05, 1.05] : [1, 1, 1] }),
-  });
+  useEffect(() => {
+    isMounted.current = true;
+  }, []);
 
   return (
     <animated.group ref={RubiksCubeRef} {...cubeSpring} {...bind()} {...props}>
@@ -102,7 +93,6 @@ function RubiksCube(props) {
         group={frontGroup}
         cubesRef={cubesRef}
         sideUpdate={sideUpdate}
-        toggleCubeUpdate={() => toggleCubeUpdate(!cubeUpdate)}
         activeSide={props.activeSide}
         numRotations={props.numRotations}
         resetRotation={props.resetRotation}
@@ -117,7 +107,6 @@ function RubiksCube(props) {
         group={backGroup}
         cubesRef={cubesRef}
         sideUpdate={sideUpdate}
-        toggleCubeUpdate={() => toggleCubeUpdate(!cubeUpdate)}
         activeSide={props.activeSide}
         numRotations={props.numRotations}
         resetRotation={props.resetRotation}
@@ -132,7 +121,6 @@ function RubiksCube(props) {
         group={leftGroup}
         cubesRef={cubesRef}
         sideUpdate={sideUpdate}
-        toggleCubeUpdate={() => toggleCubeUpdate(!cubeUpdate)}
         activeSide={props.activeSide}
         numRotations={props.numRotations}
         resetRotation={props.resetRotation}
@@ -147,7 +135,6 @@ function RubiksCube(props) {
         group={rightGroup}
         cubesRef={cubesRef}
         sideUpdate={sideUpdate}
-        toggleCubeUpdate={() => toggleCubeUpdate(!cubeUpdate)}
         activeSide={props.activeSide}
         numRotations={props.numRotations}
         resetRotation={props.resetRotation}
@@ -162,7 +149,6 @@ function RubiksCube(props) {
         group={upGroup}
         cubesRef={cubesRef}
         sideUpdate={sideUpdate}
-        toggleCubeUpdate={() => toggleCubeUpdate(!cubeUpdate)}
         activeSide={props.activeSide}
         numRotations={props.numRotations}
         resetRotation={props.resetRotation}
@@ -177,7 +163,6 @@ function RubiksCube(props) {
         group={downGroup}
         cubesRef={cubesRef}
         sideUpdate={sideUpdate}
-        toggleCubeUpdate={() => toggleCubeUpdate(!cubeUpdate)}
         activeSide={props.activeSide}
         numRotations={props.numRotations}
         resetRotation={props.resetRotation}
@@ -194,7 +179,9 @@ function RubiksCube(props) {
           activeSide={props.activeSide}
           numRotations={props.numRotations.current}
           isAnimationDone={isAnimationDone}
-          cubeUpdate={cubeUpdate}
+          incrementCubesUpdated={() =>
+            setCubesUpdated((prevValue) => prevValue + 1)
+          }
         ></Cube>
         {/* F1, U7, L3 */}
         <Cube
@@ -202,7 +189,9 @@ function RubiksCube(props) {
           activeSide={props.activeSide}
           numRotations={props.numRotations.current}
           isAnimationDone={isAnimationDone}
-          cubeUpdate={cubeUpdate}
+          incrementCubesUpdated={() =>
+            setCubesUpdated((prevValue) => prevValue + 1)
+          }
         ></Cube>
         {/* F2, U6 */}
         <Cube
@@ -210,7 +199,9 @@ function RubiksCube(props) {
           activeSide={props.activeSide}
           numRotations={props.numRotations.current}
           isAnimationDone={isAnimationDone}
-          cubeUpdate={cubeUpdate}
+          incrementCubesUpdated={() =>
+            setCubesUpdated((prevValue) => prevValue + 1)
+          }
         ></Cube>
         {/* F3, U5, R1 */}
         <Cube
@@ -218,7 +209,9 @@ function RubiksCube(props) {
           activeSide={props.activeSide}
           numRotations={props.numRotations.current}
           isAnimationDone={isAnimationDone}
-          cubeUpdate={cubeUpdate}
+          incrementCubesUpdated={() =>
+            setCubesUpdated((prevValue) => prevValue + 1)
+          }
         ></Cube>
         {/* F4, R8 */}
         <Cube
@@ -226,7 +219,9 @@ function RubiksCube(props) {
           activeSide={props.activeSide}
           numRotations={props.numRotations.current}
           isAnimationDone={isAnimationDone}
-          cubeUpdate={cubeUpdate}
+          incrementCubesUpdated={() =>
+            setCubesUpdated((prevValue) => prevValue + 1)
+          }
         ></Cube>
         {/* F5, R7, D3 */}
         <Cube
@@ -234,7 +229,9 @@ function RubiksCube(props) {
           activeSide={props.activeSide}
           numRotations={props.numRotations.current}
           isAnimationDone={isAnimationDone}
-          cubeUpdate={cubeUpdate}
+          incrementCubesUpdated={() =>
+            setCubesUpdated((prevValue) => prevValue + 1)
+          }
         ></Cube>
         {/* F6, D2 */}
         <Cube
@@ -242,7 +239,9 @@ function RubiksCube(props) {
           activeSide={props.activeSide}
           numRotations={props.numRotations.current}
           isAnimationDone={isAnimationDone}
-          cubeUpdate={cubeUpdate}
+          incrementCubesUpdated={() =>
+            setCubesUpdated((prevValue) => prevValue + 1)
+          }
         ></Cube>
         {/* F7, D1, L5 */}
         <Cube
@@ -250,7 +249,9 @@ function RubiksCube(props) {
           activeSide={props.activeSide}
           numRotations={props.numRotations.current}
           isAnimationDone={isAnimationDone}
-          cubeUpdate={cubeUpdate}
+          incrementCubesUpdated={() =>
+            setCubesUpdated((prevValue) => prevValue + 1)
+          }
         ></Cube>
         {/* F8, L4 */}
         <Cube
@@ -258,7 +259,9 @@ function RubiksCube(props) {
           activeSide={props.activeSide}
           numRotations={props.numRotations.current}
           isAnimationDone={isAnimationDone}
-          cubeUpdate={cubeUpdate}
+          incrementCubesUpdated={() =>
+            setCubesUpdated((prevValue) => prevValue + 1)
+          }
         ></Cube>
 
         {/* B0 */}
@@ -267,7 +270,9 @@ function RubiksCube(props) {
           activeSide={props.activeSide}
           numRotations={props.numRotations.current}
           isAnimationDone={isAnimationDone}
-          cubeUpdate={cubeUpdate}
+          incrementCubesUpdated={() =>
+            setCubesUpdated((prevValue) => prevValue + 1)
+          }
         ></Cube>
         {/* B1, U3, R3 */}
         <Cube
@@ -275,7 +280,9 @@ function RubiksCube(props) {
           activeSide={props.activeSide}
           numRotations={props.numRotations.current}
           isAnimationDone={isAnimationDone}
-          cubeUpdate={cubeUpdate}
+          incrementCubesUpdated={() =>
+            setCubesUpdated((prevValue) => prevValue + 1)
+          }
         ></Cube>
         {/* B2, U2 */}
         <Cube
@@ -283,7 +290,9 @@ function RubiksCube(props) {
           activeSide={props.activeSide}
           numRotations={props.numRotations.current}
           isAnimationDone={isAnimationDone}
-          cubeUpdate={cubeUpdate}
+          incrementCubesUpdated={() =>
+            setCubesUpdated((prevValue) => prevValue + 1)
+          }
         ></Cube>
         {/* B3, U1, L1 */}
         <Cube
@@ -291,7 +300,9 @@ function RubiksCube(props) {
           activeSide={props.activeSide}
           numRotations={props.numRotations.current}
           isAnimationDone={isAnimationDone}
-          cubeUpdate={cubeUpdate}
+          incrementCubesUpdated={() =>
+            setCubesUpdated((prevValue) => prevValue + 1)
+          }
         ></Cube>
         {/* B4, L8 */}
         <Cube
@@ -299,7 +310,9 @@ function RubiksCube(props) {
           activeSide={props.activeSide}
           numRotations={props.numRotations.current}
           isAnimationDone={isAnimationDone}
-          cubeUpdate={cubeUpdate}
+          incrementCubesUpdated={() =>
+            setCubesUpdated((prevValue) => prevValue + 1)
+          }
         ></Cube>
         {/* B5, L7, D7 */}
         <Cube
@@ -307,7 +320,9 @@ function RubiksCube(props) {
           activeSide={props.activeSide}
           numRotations={props.numRotations.current}
           isAnimationDone={isAnimationDone}
-          cubeUpdate={cubeUpdate}
+          incrementCubesUpdated={() =>
+            setCubesUpdated((prevValue) => prevValue + 1)
+          }
         ></Cube>
         {/* B6, D6 */}
         <Cube
@@ -315,7 +330,9 @@ function RubiksCube(props) {
           activeSide={props.activeSide}
           numRotations={props.numRotations.current}
           isAnimationDone={isAnimationDone}
-          cubeUpdate={cubeUpdate}
+          incrementCubesUpdated={() =>
+            setCubesUpdated((prevValue) => prevValue + 1)
+          }
         ></Cube>
         {/* B7, R5, D5 */}
         <Cube
@@ -323,7 +340,9 @@ function RubiksCube(props) {
           activeSide={props.activeSide}
           numRotations={props.numRotations.current}
           isAnimationDone={isAnimationDone}
-          cubeUpdate={cubeUpdate}
+          incrementCubesUpdated={() =>
+            setCubesUpdated((prevValue) => prevValue + 1)
+          }
         ></Cube>
         {/* B8, R4 */}
         <Cube
@@ -331,7 +350,9 @@ function RubiksCube(props) {
           activeSide={props.activeSide}
           numRotations={props.numRotations.current}
           isAnimationDone={isAnimationDone}
-          cubeUpdate={cubeUpdate}
+          incrementCubesUpdated={() =>
+            setCubesUpdated((prevValue) => prevValue + 1)
+          }
         ></Cube>
         {/* D0 */}
         <Cube
@@ -339,7 +360,9 @@ function RubiksCube(props) {
           activeSide={props.activeSide}
           numRotations={props.numRotations.current}
           isAnimationDone={isAnimationDone}
-          cubeUpdate={cubeUpdate}
+          incrementCubesUpdated={() =>
+            setCubesUpdated((prevValue) => prevValue + 1)
+          }
         ></Cube>
         {/* L6, D8 */}
         <Cube
@@ -347,7 +370,9 @@ function RubiksCube(props) {
           activeSide={props.activeSide}
           numRotations={props.numRotations.current}
           isAnimationDone={isAnimationDone}
-          cubeUpdate={cubeUpdate}
+          incrementCubesUpdated={() =>
+            setCubesUpdated((prevValue) => prevValue + 1)
+          }
         ></Cube>
         {/* R6, D4 */}
         <Cube
@@ -355,7 +380,9 @@ function RubiksCube(props) {
           activeSide={props.activeSide}
           numRotations={props.numRotations.current}
           isAnimationDone={isAnimationDone}
-          cubeUpdate={cubeUpdate}
+          incrementCubesUpdated={() =>
+            setCubesUpdated((prevValue) => prevValue + 1)
+          }
         ></Cube>
         {/* L0 */}
         <Cube
@@ -363,7 +390,9 @@ function RubiksCube(props) {
           activeSide={props.activeSide}
           numRotations={props.numRotations.current}
           isAnimationDone={isAnimationDone}
-          cubeUpdate={cubeUpdate}
+          incrementCubesUpdated={() =>
+            setCubesUpdated((prevValue) => prevValue + 1)
+          }
         ></Cube>
         {/* C0 */}
         <Cube
@@ -371,7 +400,9 @@ function RubiksCube(props) {
           activeSide={props.activeSide}
           numRotations={props.numRotations.current}
           isAnimationDone={isAnimationDone}
-          cubeUpdate={cubeUpdate}
+          incrementCubesUpdated={() =>
+            setCubesUpdated((prevValue) => prevValue + 1)
+          }
         ></Cube>
         {/* R0 */}
         <Cube
@@ -379,7 +410,9 @@ function RubiksCube(props) {
           activeSide={props.activeSide}
           numRotations={props.numRotations.current}
           isAnimationDone={isAnimationDone}
-          cubeUpdate={cubeUpdate}
+          incrementCubesUpdated={() =>
+            setCubesUpdated((prevValue) => prevValue + 1)
+          }
         ></Cube>
         {/* L2, U8 */}
         <Cube
@@ -387,7 +420,9 @@ function RubiksCube(props) {
           activeSide={props.activeSide}
           numRotations={props.numRotations.current}
           isAnimationDone={isAnimationDone}
-          cubeUpdate={cubeUpdate}
+          incrementCubesUpdated={() =>
+            setCubesUpdated((prevValue) => prevValue + 1)
+          }
         ></Cube>
         {/* U0 */}
         <Cube
@@ -395,7 +430,9 @@ function RubiksCube(props) {
           activeSide={props.activeSide}
           numRotations={props.numRotations.current}
           isAnimationDone={isAnimationDone}
-          cubeUpdate={cubeUpdate}
+          incrementCubesUpdated={() =>
+            setCubesUpdated((prevValue) => prevValue + 1)
+          }
         ></Cube>
         {/* R2, U4 */}
         <Cube
@@ -403,7 +440,9 @@ function RubiksCube(props) {
           activeSide={props.activeSide}
           numRotations={props.numRotations.current}
           isAnimationDone={isAnimationDone}
-          cubeUpdate={cubeUpdate}
+          incrementCubesUpdated={() =>
+            setCubesUpdated((prevValue) => prevValue + 1)
+          }
         ></Cube>
       </animated.group>
 

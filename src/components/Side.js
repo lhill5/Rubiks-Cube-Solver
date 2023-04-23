@@ -138,7 +138,7 @@ const Side = (props) => {
     setSide({
       rotation: [x, y, z],
       config: {
-        duration: 250 * num_rotations,
+        duration: 200 * num_rotations,
       },
     });
   };
@@ -185,7 +185,7 @@ const Side = (props) => {
         let num_rotations = props.numRotations.current;
         rotateSide(num_rotations);
       }
-    }, 500);
+    }, 50);
 
     if (props.numRotations.current > 0) {
       handleDebouncedClick();
@@ -264,7 +264,6 @@ const Side = (props) => {
 
         cube.position.set(new_position.x, new_position.y, new_position.z);
       });
-      props.toggleCubeUpdate();
       resetRotation();
     }
   }, [props.isAnimationDone]);
