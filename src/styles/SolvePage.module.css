@@ -1,0 +1,17 @@
+.main-btns {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  width: 24rem;
+}
+
+.btn-group button {
+  border: none;
+  width: 7.5rem;
+  height: 2.5rem;
+  border-radius: 1.5rem;
+  background: #e4edf1;
+  color: #212121;
+  font-size: 1.2em;
+  text-align: center;
+}

@@ -1,6 +1,8 @@
-import React, { useRef, forwardRef, useState, useEffect } from "react";
+import React, { useRef, forwardRef, useState, useEffect, useMemo } from "react";
 import { animated } from "@react-spring/three";
-import { Vector3 } from "three";
+// import { Vector3 } from "three";
+import { Box } from "@react-three/drei";
+import { MeshBasicMaterial, DoubleSide, WebGL1Renderer } from "three";
 
 const getColor = (side, coord, blankColor, faceColor) => {
   if (["F", "R", "U"].includes(side)) {
@@ -12,9 +14,18 @@ const getColor = (side, coord, blankColor, faceColor) => {
   }
 };
 
+const getHex = (color) => {
+  if (color === "red") return "#b71234";
+  else if (color === "orange") return "#ff5800";
+  else if (color === "white") return "#ffffff";
+  else if (color === "yellow") return "#ffd500";
+  else if (color === "green") return "#009b48";
+  else if (color === "blue") return "#0046ad";
+};
+
 const Cube = (props) => {
   const cubeRef = useRef(null);
-  const cube_position = useRef(props.position);
+  const cubePosition = useRef(props.position);
   const isFirstRender = useRef(true);
 
   const { x, y, z } = props.position;
@@ -29,17 +40,18 @@ const Cube = (props) => {
     B: getColor("B", z, blankColor, "#0046ad"),
   });
 
+  // todo - write this as a function, used in Side.js too
   const isCubeOnActiveSide = () => {
-    if (props.activeSide === "F" && cube_position.current.z === 1) return true;
-    else if (props.activeSide === "B" && cube_position.current.z === -1)
+    if (props.activeSide === "F" && cubePosition.current.z === 1) return true;
+    else if (props.activeSide === "B" && cubePosition.current.z === -1)
       return true;
-    else if (props.activeSide === "L" && cube_position.current.x === -1)
+    else if (props.activeSide === "L" && cubePosition.current.x === -1)
       return true;
-    else if (props.activeSide === "R" && cube_position.current.x === 1)
+    else if (props.activeSide === "R" && cubePosition.current.x === 1)
       return true;
-    else if (props.activeSide === "U" && cube_position.current.y === 1)
+    else if (props.activeSide === "U" && cubePosition.current.y === 1)
       return true;
-    else if (props.activeSide === "D" && cube_position.current.y === -1)
+    else if (props.activeSide === "D" && cubePosition.current.y === -1)
       return true;
     return false;
   };
@@ -60,6 +72,15 @@ const Cube = (props) => {
     R: { 0: "F", 1: "D", 2: "B", 3: "U" },
     U: { 0: "F", 1: "R", 2: "B", 3: "L" },
     D: { 0: "F", 1: "L", 2: "B", 3: "R" },
+  };
+
+  const indexToFace = {
+    0: "R",
+    1: "L",
+    2: "U",
+    3: "D",
+    4: "F",
+    5: "B",
   };
 
   const getNextSide = (active_side, cur_side) => {
@@ -143,6 +164,7 @@ const Cube = (props) => {
             };
             break;
         }
+
         // update the state of the object
         setCubeColors(updatedCubeColors);
         props.incrementCubesUpdated();
@@ -153,20 +175,47 @@ const Cube = (props) => {
 
   useEffect(() => {
     if (cubeRef.current) {
-      cube_position.current = cubeRef.current.position;
+      cubePosition.current = cubeRef.current.position;
     }
   }, [cubeRef.current?.position]);
 
+  useEffect(() => {
+    props.setCubeState(cubePosition.current, cubeColors);
+  }, [useMemo(() => [cubePosition, cubeColors], [cubePosition, cubeColors])]);
+
+  const handleMeshClick = (event) => {
+    // prevent cubes behind clicked cube from triggering function call
+    event.stopPropagation();
+
+    // if clicked on center cube, ignore color change
+    const { x, y, z } = cubePosition.current;
+    if ((x === 0 && y === 0) || (y === 0 && z === 0) || (x === 0 && z === 0))
+      return;
+
+    let face_index = parseInt(event.faceIndex / 2);
+    let face = indexToFace[face_index];
+    console.log(face);
+    console.log(event);
+    const updatedCubeColors = {
+      ...cubeColors,
+      [face]: getHex(props.activeColor),
+    };
+    if (cubeColors[face] !== blankColor) {
+      setCubeColors(updatedCubeColors);
+    }
+  };
+
   return (
-    <animated.mesh
+    <Box
       ref={cubeRef}
       position={[
         cubeRef.current ? cubeRef.current.position.x : props.position.x,
         cubeRef.current ? cubeRef.current.position.y : props.position.y,
         cubeRef.current ? cubeRef.current.position.z : props.position.z,
       ]}
+      onClick={(event) => handleMeshClick(event)}
     >
-      <boxGeometry args={[0.96, 0.96, 0.96]} />
+      <boxGeometry attach="geometry" args={[0.96, 0.96, 0.96]} />
       {/* red | right */}
       <meshBasicMaterial attach="material-0" color={cubeColors.R} />
       {/* orange | left */}
@@ -179,7 +228,7 @@ const Cube = (props) => {
       <meshBasicMaterial attach="material-4" color={cubeColors.F} />
       {/* blue | back */}
       <meshBasicMaterial attach="material-5" color={cubeColors.B} />
-    </animated.mesh>
+    </Box>
   );
 };
 

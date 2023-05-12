@@ -1,0 +1,29 @@
+.rotate-btns {
+  width: 24rem;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.rotate-btns .btn-group button {
+  width: 3rem;
+  height: 2.5rem;
+
+  background: #e4edf1;
+  border-radius: 1.5rem;
+  color: #212121;
+  font-size: 1.2em;
+  text-align: center;
+  border: none;
+  margin: 0;
+  padding: 0;
+}
+
+.rotate-btns .btn-group button:hover {
+  border: 1px #212121 solid;
+}
+
+.btn-group .front:hover {
+  /* background-color: var(--front-color); */
+  border: var(--border-size) var(--front-color) solid;
+}

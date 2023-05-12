@@ -3,10 +3,6 @@ import { Canvas, useThree, useFrame } from "@react-three/fiber";
 import { useSpring, animated } from "@react-spring/three";
 import debounce from "lodash.debounce";
 
-/*
-    [0,-1,1] -> [1,-1,0]
-*/
-
 const getRotatedPosition = (side, position3d) => {
   // handles front/right/up rotations
 
