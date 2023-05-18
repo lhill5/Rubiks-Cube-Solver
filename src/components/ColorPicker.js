@@ -2,9 +2,10 @@ import React, { useState, useRef } from "react";
 
 import classNames from "classnames";
 import styles from "../styles/ColorPicker.module.css";
-import { Color } from "three";
 
 export default function ColorPicker({ activeColor, setActiveColor }) {
+  let color = "white";
+
   return (
     <div className={styles["color-picker"]}>
       <ColorBox

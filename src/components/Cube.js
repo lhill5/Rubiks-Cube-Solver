@@ -1,8 +1,7 @@
 import React, { useRef, forwardRef, useState, useEffect, useMemo } from "react";
-import { animated } from "@react-spring/three";
+// import { animated } from "@react-spring/three";
 // import { Vector3 } from "three";
 import { Box } from "@react-three/drei";
-import { MeshBasicMaterial, DoubleSide, WebGL1Renderer } from "three";
 
 const getColor = (side, coord, blankColor, faceColor) => {
   if (["F", "R", "U"].includes(side)) {
@@ -194,8 +193,7 @@ const Cube = (props) => {
 
     let face_index = parseInt(event.faceIndex / 2);
     let face = indexToFace[face_index];
-    console.log(face);
-    console.log(event);
+
     const updatedCubeColors = {
       ...cubeColors,
       [face]: getHex(props.activeColor),

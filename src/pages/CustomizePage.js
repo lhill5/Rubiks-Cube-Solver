@@ -1,8 +1,17 @@
 import React from "react";
 import ColorPicker from "../components/ColorPicker";
+import RubiksCube from "../components/RubiksCube";
+import { Canvas } from "@react-three/fiber";
+import { PerspectiveCamera } from "@react-three/drei";
+import styles from "../styles/CustomizePage.module.css";
 
-export default function CustomizePage({ activeColor, setActiveColor }) {
+export default function CustomizePage(props) {
   return (
-    <ColorPicker activeColor={activeColor} setActiveColor={setActiveColor} />
+    <div className={styles["center"]}>
+      <ColorPicker
+        activeColor={props.activeColor}
+        setActiveColor={props.setActiveColor}
+      ></ColorPicker>
+    </div>
   );
 }

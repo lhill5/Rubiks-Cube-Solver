@@ -172,47 +172,77 @@ function App() {
   }, []); // Make sure to include an empty dependency array to run the effect only once on mount
 
   return (
-    <Router>
-      <Header setPage={setPage} />
-      <div className={styles["background"]}>
-        <div className={styles["rubiks-cube"]}>
-          <Canvas>
-            <PerspectiveCamera makeDefault position={[0, 0, 8]} fov={50} />
-            <ambientLight />
-            <pointLight position={[10, 10, 10]} />
-
-            <RubiksCube
-              activeSide={activeSide}
-              numRotations={numRotations}
-              resetRotation={resetRotation}
-              setCubeState={setCubeState}
-              setMoveDone={(state) => setMoveDone(state)}
-              activeColor={activeColor}
-            />
-          </Canvas>
-        </div>
-
-        <Routes>
-          <Route
-            path="/Customize"
-            element={
-              <CustomizePage
+    <>
+      <Router>
+        <Header setPage={setPage} />
+        <div className={styles["background"]}>
+          <div className={styles["rubiks-cube"]}>
+            <Canvas>
+              <PerspectiveCamera makeDefault position={[0, 0, 8]} fov={50} />
+              <ambientLight />
+              <pointLight position={[10, 10, 10]} />
+              <RubiksCube
+                activeSide={activeSide}
+                numRotations={numRotations}
+                resetRotation={resetRotation}
+                setCubeState={setCubeState}
+                setMoveDone={(state) => setMoveDone(state)}
                 activeColor={activeColor}
-                setActiveColor={setActiveColor}
               />
-            }
-          />
-          <Route
-            path="/Scramble"
-            element={<ScramblePage updateRotation={updateRotation} />}
-          />
-          <Route
-            path="/Solve"
-            element={<SolvePage scramble={scramble} solve={() => solve()} />}
-          />
-        </Routes>
-      </div>
-    </Router>
+            </Canvas>
+
+            <Routes>
+              <Route
+                path="/Scramble"
+                element={
+                  <ScramblePage
+                    activeColor={activeColor}
+                    setActiveColor={setActiveColor}
+                    activeSide={activeSide}
+                    numRotations={numRotations}
+                    resetRotation={resetRotation}
+                    setCubeState={setCubeState}
+                    setMoveDone={(state) => setMoveDone(state)}
+                    updateRotation={updateRotation}
+                  />
+                }
+              />
+              <Route
+                path="/Customize"
+                element={
+                  <CustomizePage
+                    activeColor={activeColor}
+                    setActiveColor={setActiveColor}
+                    activeSide={activeSide}
+                    numRotations={numRotations}
+                    resetRotation={resetRotation}
+                    setCubeState={setCubeState}
+                    setMoveDone={(state) => setMoveDone(state)}
+                  />
+                }
+              />
+
+              <Route
+                path="/Solve"
+                element={
+                  <SolvePage
+                    activeColor={activeColor}
+                    setActiveColor={setActiveColor}
+                    activeSide={activeSide}
+                    numRotations={numRotations}
+                    resetRotation={resetRotation}
+                    setCubeState={setCubeState}
+                    setMoveDone={(state) => setMoveDone(state)}
+                    scramble={scramble}
+                    solve={solve}
+                  />
+                }
+              />
+            </Routes>
+          </div>
+        </div>
+      </Router>
+    </>
   );
 }
 
