@@ -8,9 +8,6 @@ export default function SolvePage(props) {
   return (
     <div className={styles["main-btns"]}>
       <div className={styles["btn-group"]}>
-        <button onClick={() => props.scramble()}>Scramble</button>
-      </div>
-      <div className={styles["btn-group"]}>
         <button onClick={() => props.solve()}>Solve</button>
       </div>
     </div>

@@ -184,6 +184,8 @@ function RubiksCube(props) {
             setCubesUpdated((prevValue) => prevValue + 1)
           }
           activeColor={props.activeColor}
+          clearCube={props.clearCube}
+          fillCube={props.fillCube}
         ></Cube>
         {/* F1, U7, L3 */}
         <Cube
@@ -196,6 +198,8 @@ function RubiksCube(props) {
             setCubesUpdated((prevValue) => prevValue + 1)
           }
           activeColor={props.activeColor}
+          clearCube={props.clearCube}
+          fillCube={props.fillCube}
         ></Cube>
         {/* F2, U6 */}
         <Cube
@@ -208,6 +212,8 @@ function RubiksCube(props) {
             setCubesUpdated((prevValue) => prevValue + 1)
           }
           activeColor={props.activeColor}
+          clearCube={props.clearCube}
+          fillCube={props.fillCube}
         ></Cube>
         {/* F3, U5, R1 */}
         <Cube
@@ -220,6 +226,8 @@ function RubiksCube(props) {
             setCubesUpdated((prevValue) => prevValue + 1)
           }
           activeColor={props.activeColor}
+          clearCube={props.clearCube}
+          fillCube={props.fillCube}
         ></Cube>
         {/* F4, R8 */}
         <Cube
@@ -232,6 +240,8 @@ function RubiksCube(props) {
             setCubesUpdated((prevValue) => prevValue + 1)
           }
           activeColor={props.activeColor}
+          clearCube={props.clearCube}
+          fillCube={props.fillCube}
         ></Cube>
         {/* F5, R7, D3 */}
         <Cube
@@ -244,6 +254,8 @@ function RubiksCube(props) {
             setCubesUpdated((prevValue) => prevValue + 1)
           }
           activeColor={props.activeColor}
+          clearCube={props.clearCube}
+          fillCube={props.fillCube}
         ></Cube>
         {/* F6, D2 */}
         <Cube
@@ -256,6 +268,8 @@ function RubiksCube(props) {
             setCubesUpdated((prevValue) => prevValue + 1)
           }
           activeColor={props.activeColor}
+          clearCube={props.clearCube}
+          fillCube={props.fillCube}
         ></Cube>
         {/* F7, D1, L5 */}
         <Cube
@@ -268,6 +282,8 @@ function RubiksCube(props) {
             setCubesUpdated((prevValue) => prevValue + 1)
           }
           activeColor={props.activeColor}
+          clearCube={props.clearCube}
+          fillCube={props.fillCube}
         ></Cube>
         {/* F8, L4 */}
         <Cube
@@ -280,6 +296,8 @@ function RubiksCube(props) {
             setCubesUpdated((prevValue) => prevValue + 1)
           }
           activeColor={props.activeColor}
+          clearCube={props.clearCube}
+          fillCube={props.fillCube}
         ></Cube>
 
         {/* B0 */}
@@ -293,6 +311,8 @@ function RubiksCube(props) {
             setCubesUpdated((prevValue) => prevValue + 1)
           }
           activeColor={props.activeColor}
+          clearCube={props.clearCube}
+          fillCube={props.fillCube}
         ></Cube>
         {/* B1, U3, R3 */}
         <Cube
@@ -305,6 +325,8 @@ function RubiksCube(props) {
             setCubesUpdated((prevValue) => prevValue + 1)
           }
           activeColor={props.activeColor}
+          clearCube={props.clearCube}
+          fillCube={props.fillCube}
         ></Cube>
         {/* B2, U2 */}
         <Cube
@@ -317,6 +339,8 @@ function RubiksCube(props) {
             setCubesUpdated((prevValue) => prevValue + 1)
           }
           activeColor={props.activeColor}
+          clearCube={props.clearCube}
+          fillCube={props.fillCube}
         ></Cube>
         {/* B3, U1, L1 */}
         <Cube
@@ -329,6 +353,8 @@ function RubiksCube(props) {
             setCubesUpdated((prevValue) => prevValue + 1)
           }
           activeColor={props.activeColor}
+          clearCube={props.clearCube}
+          fillCube={props.fillCube}
         ></Cube>
         {/* B4, L8 */}
         <Cube
@@ -341,6 +367,8 @@ function RubiksCube(props) {
             setCubesUpdated((prevValue) => prevValue + 1)
           }
           activeColor={props.activeColor}
+          clearCube={props.clearCube}
+          fillCube={props.fillCube}
         ></Cube>
         {/* B5, L7, D7 */}
         <Cube
@@ -353,6 +381,8 @@ function RubiksCube(props) {
             setCubesUpdated((prevValue) => prevValue + 1)
           }
           activeColor={props.activeColor}
+          clearCube={props.clearCube}
+          fillCube={props.fillCube}
         ></Cube>
         {/* B6, D6 */}
         <Cube
@@ -365,6 +395,8 @@ function RubiksCube(props) {
             setCubesUpdated((prevValue) => prevValue + 1)
           }
           activeColor={props.activeColor}
+          clearCube={props.clearCube}
+          fillCube={props.fillCube}
         ></Cube>
         {/* B7, R5, D5 */}
         <Cube
@@ -377,6 +409,8 @@ function RubiksCube(props) {
             setCubesUpdated((prevValue) => prevValue + 1)
           }
           activeColor={props.activeColor}
+          clearCube={props.clearCube}
+          fillCube={props.fillCube}
         ></Cube>
         {/* B8, R4 */}
         <Cube
@@ -389,6 +423,8 @@ function RubiksCube(props) {
             setCubesUpdated((prevValue) => prevValue + 1)
           }
           activeColor={props.activeColor}
+          clearCube={props.clearCube}
+          fillCube={props.fillCube}
         ></Cube>
         {/* D0 */}
         <Cube
@@ -401,6 +437,8 @@ function RubiksCube(props) {
             setCubesUpdated((prevValue) => prevValue + 1)
           }
           activeColor={props.activeColor}
+          clearCube={props.clearCube}
+          fillCube={props.fillCube}
         ></Cube>
         {/* L6, D8 */}
         <Cube
@@ -413,6 +451,8 @@ function RubiksCube(props) {
             setCubesUpdated((prevValue) => prevValue + 1)
           }
           activeColor={props.activeColor}
+          clearCube={props.clearCube}
+          fillCube={props.fillCube}
         ></Cube>
         {/* R6, D4 */}
         <Cube
@@ -425,6 +465,8 @@ function RubiksCube(props) {
             setCubesUpdated((prevValue) => prevValue + 1)
           }
           activeColor={props.activeColor}
+          clearCube={props.clearCube}
+          fillCube={props.fillCube}
         ></Cube>
         {/* L0 */}
         <Cube
@@ -437,6 +479,8 @@ function RubiksCube(props) {
             setCubesUpdated((prevValue) => prevValue + 1)
           }
           activeColor={props.activeColor}
+          clearCube={props.clearCube}
+          fillCube={props.fillCube}
         ></Cube>
         {/* C0 */}
         <Cube
@@ -449,6 +493,8 @@ function RubiksCube(props) {
             setCubesUpdated((prevValue) => prevValue + 1)
           }
           activeColor={props.activeColor}
+          clearCube={props.clearCube}
+          fillCube={props.fillCube}
         ></Cube>
         {/* R0 */}
         <Cube
@@ -461,6 +507,8 @@ function RubiksCube(props) {
             setCubesUpdated((prevValue) => prevValue + 1)
           }
           activeColor={props.activeColor}
+          clearCube={props.clearCube}
+          fillCube={props.fillCube}
         ></Cube>
         {/* L2, U8 */}
         <Cube
@@ -473,6 +521,8 @@ function RubiksCube(props) {
             setCubesUpdated((prevValue) => prevValue + 1)
           }
           activeColor={props.activeColor}
+          clearCube={props.clearCube}
+          fillCube={props.fillCube}
         ></Cube>
         {/* U0 */}
         <Cube
@@ -485,6 +535,8 @@ function RubiksCube(props) {
             setCubesUpdated((prevValue) => prevValue + 1)
           }
           activeColor={props.activeColor}
+          clearCube={props.clearCube}
+          fillCube={props.fillCube}
         ></Cube>
         {/* R2, U4 */}
         <Cube
@@ -497,6 +549,8 @@ function RubiksCube(props) {
             setCubesUpdated((prevValue) => prevValue + 1)
           }
           activeColor={props.activeColor}
+          clearCube={props.clearCube}
+          fillCube={props.fillCube}
         ></Cube>
       </animated.group>
     </animated.group>

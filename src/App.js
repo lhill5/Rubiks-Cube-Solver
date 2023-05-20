@@ -8,19 +8,24 @@ import CustomizePage from "./pages/CustomizePage";
 import SolvePage from "./pages/SolvePage";
 
 import RubiksCube from "./components/RubiksCube";
+import ClearCube from "./components/ClearCube";
+import ScrambleCube from "./components/ScrambleCube";
+
 import Header from "./components/Header";
 import styles from "./styles/App.module.css";
 import { convertCoordToSquareNotations } from "./utils/rubiksCubeConverter";
 import { solveRubiksCube } from "./utils/rubiksCubeSolver";
 
 function App() {
-  const [page, setPage] = useState("Customize");
+  const [page, setPage] = useState("");
   const [activeSide, setActiveSide] = useState("");
   const [movesQueue, setMovesQueue] = useState([]);
   const [isMoveDone, setMoveDone] = useState(false);
   const [rubiksCubeState, setRubiksCubeState] = useState({});
   const [rubiksCubeSolution, setRubiksCubeSolution] = useState("");
   const [clearQueue, setClearQueue] = useState(false);
+  const [clearCube, toggleClearCube] = useState(false);
+  const [fillCube, toggleFillCube] = useState(false);
 
   // tracks which ColorPicker box is selected
   const [activeColor, setActiveColor] = useState("");
@@ -177,6 +182,17 @@ function App() {
         <Header setPage={setPage} />
         <div className={styles["background"]}>
           <div className={styles["rubiks-cube"]}>
+            {page === "Customize" ? (
+              <ClearCube
+                toggleClearCube={() => toggleClearCube(!clearCube)}
+                toggleFillCube={() => toggleFillCube(!fillCube)}
+              ></ClearCube>
+            ) : null}
+
+            {page === "Scramble" ? (
+              <ScrambleCube scramble={scramble}></ScrambleCube>
+            ) : null}
+
             <Canvas>
               <PerspectiveCamera makeDefault position={[0, 0, 8]} fov={50} />
               <ambientLight />
@@ -188,6 +204,8 @@ function App() {
                 setCubeState={setCubeState}
                 setMoveDone={(state) => setMoveDone(state)}
                 activeColor={activeColor}
+                clearCube={clearCube}
+                fillCube={fillCube}
               />
             </Canvas>
 
@@ -195,16 +213,7 @@ function App() {
               <Route
                 path="/Scramble"
                 element={
-                  <ScramblePage
-                    activeColor={activeColor}
-                    setActiveColor={setActiveColor}
-                    activeSide={activeSide}
-                    numRotations={numRotations}
-                    resetRotation={resetRotation}
-                    setCubeState={setCubeState}
-                    setMoveDone={(state) => setMoveDone(state)}
-                    updateRotation={updateRotation}
-                  />
+                  <ScramblePage updateRotation={updateRotation}></ScramblePage>
                 }
               />
               <Route
@@ -213,30 +222,12 @@ function App() {
                   <CustomizePage
                     activeColor={activeColor}
                     setActiveColor={setActiveColor}
-                    activeSide={activeSide}
-                    numRotations={numRotations}
-                    resetRotation={resetRotation}
-                    setCubeState={setCubeState}
-                    setMoveDone={(state) => setMoveDone(state)}
-                  />
+                  ></CustomizePage>
                 }
               />
-
               <Route
                 path="/Solve"
-                element={
-                  <SolvePage
-                    activeColor={activeColor}
-                    setActiveColor={setActiveColor}
-                    activeSide={activeSide}
-                    numRotations={numRotations}
-                    resetRotation={resetRotation}
-                    setCubeState={setCubeState}
-                    setMoveDone={(state) => setMoveDone(state)}
-                    scramble={scramble}
-                    solve={solve}
-                  />
-                }
+                element={<SolvePage scramble={scramble} solve={solve} />}
               />
             </Routes>
           </div>

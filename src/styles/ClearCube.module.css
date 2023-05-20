@@ -1,0 +1,20 @@
+.svg-header {
+  position: absolute;
+  z-index: 1;
+}
+
+.svg {
+  position: absolute;
+  width: 2.25em;
+  height: 2.25em;
+}
+
+.reset-svg {
+  top: 25px;
+  left: 25px;
+}
+
+.cube-svg {
+  top: 25px;
+  left: 90px;
+}

@@ -3,14 +3,46 @@ import React, { useRef, forwardRef, useState, useEffect, useMemo } from "react";
 // import { Vector3 } from "three";
 import { Box } from "@react-three/drei";
 
-const getColor = (side, coord, blankColor, faceColor) => {
-  if (["F", "R", "U"].includes(side)) {
-    if (coord === 1) return faceColor;
-    else return blankColor;
-  } else {
-    if (coord === -1) return faceColor;
-    else return blankColor;
+const isSquareVisible = (side, position) => {
+  if (!position) return;
+
+  const { x, y, z } = position;
+  let coord;
+  switch (side) {
+    case "R":
+    case "L":
+      coord = x;
+      break;
+    case "U":
+    case "D":
+      coord = y;
+      break;
+    case "F":
+    case "B":
+      coord = z;
+      break;
   }
+
+  if (["F", "R", "U"].includes(side)) {
+    return coord === 1;
+  } else {
+    return coord === -1;
+  }
+};
+
+const getColor = (side, position, blankColor, faceColor) => {
+  if (isSquareVisible(side, position)) return faceColor;
+  else return blankColor;
+};
+
+const isCenterCube = (position) => {
+  if (!position) return;
+
+  const { x, y, z } = position;
+  if (x === 0 && y === 0) return true;
+  if (x === 0 && z === 0) return true;
+  if (y === 0 && z === 0) return true;
+  return false;
 };
 
 const getHex = (color) => {
@@ -27,16 +59,15 @@ const Cube = (props) => {
   const cubePosition = useRef(props.position);
   const isFirstRender = useRef(true);
 
-  const { x, y, z } = props.position;
   const blankColor = "#212121";
 
   const [cubeColors, setCubeColors] = useState({
-    R: getColor("R", x, blankColor, "#b71234"),
-    L: getColor("L", x, blankColor, "#ff5800"),
-    U: getColor("U", y, blankColor, "#ffffff"),
-    D: getColor("D", y, blankColor, "#ffd500"),
-    F: getColor("F", z, blankColor, "#009b48"),
-    B: getColor("B", z, blankColor, "#0046ad"),
+    R: getColor("R", cubePosition.current, blankColor, "#b71234"),
+    L: getColor("L", cubePosition.current, blankColor, "#ff5800"),
+    U: getColor("U", cubePosition.current, blankColor, "#ffffff"),
+    D: getColor("D", cubePosition.current, blankColor, "#ffd500"),
+    F: getColor("F", cubePosition.current, blankColor, "#009b48"),
+    B: getColor("B", cubePosition.current, blankColor, "#0046ad"),
   });
 
   // todo - write this as a function, used in Side.js too
@@ -181,6 +212,64 @@ const Cube = (props) => {
   useEffect(() => {
     props.setCubeState(cubePosition.current, cubeColors);
   }, [useMemo(() => [cubePosition, cubeColors], [cubePosition, cubeColors])]);
+
+  useEffect(() => {
+    const hiddenColor = "#808080";
+    if (props.isAnimationDone && !isFirstRender.current) {
+      const updatedCubeColors = {
+        ...cubeColors,
+        R:
+          isSquareVisible("R", cubePosition.current) &&
+          !isCenterCube(cubePosition.current)
+            ? hiddenColor
+            : cubeColors.R,
+        L:
+          isSquareVisible("L", cubePosition.current) &&
+          !isCenterCube(cubePosition.current)
+            ? hiddenColor
+            : cubeColors.L,
+        U:
+          isSquareVisible("U", cubePosition.current) &&
+          !isCenterCube(cubePosition.current)
+            ? hiddenColor
+            : cubeColors.U,
+        D:
+          isSquareVisible("D", cubePosition.current) &&
+          !isCenterCube(cubePosition.current)
+            ? hiddenColor
+            : cubeColors.D,
+        F:
+          isSquareVisible("F", cubePosition.current) &&
+          !isCenterCube(cubePosition.current)
+            ? hiddenColor
+            : cubeColors.F,
+        B:
+          isSquareVisible("B", cubePosition.current) &&
+          !isCenterCube(cubePosition.current)
+            ? hiddenColor
+            : cubeColors.B,
+      };
+      setCubeColors(updatedCubeColors);
+    }
+    isFirstRender.current = false;
+  }, [props.clearCube]);
+
+  useEffect(() => {
+    if (props.isAnimationDone && !isFirstRender.current) {
+      const updatedCubeColors = {
+        ...cubeColors,
+
+        R: getColor("R", cubePosition.current, blankColor, "#b71234"),
+        L: getColor("L", cubePosition.current, blankColor, "#ff5800"),
+        U: getColor("U", cubePosition.current, blankColor, "#ffffff"),
+        D: getColor("D", cubePosition.current, blankColor, "#ffd500"),
+        F: getColor("F", cubePosition.current, blankColor, "#009b48"),
+        B: getColor("B", cubePosition.current, blankColor, "#0046ad"),
+      };
+      setCubeColors(updatedCubeColors);
+    }
+    isFirstRender.current = false;
+  }, [props.fillCube]);
 
   const handleMeshClick = (event) => {
     // prevent cubes behind clicked cube from triggering function call
