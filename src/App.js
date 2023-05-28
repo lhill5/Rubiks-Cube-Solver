@@ -39,10 +39,13 @@ function App() {
   // tracks which ColorPicker box is selected
   const [activeColor, setActiveColor] = useState("");
 
+  // used on Solve page, if not in playMode then solution is shown step-by-step
+  const [playMode, setPlayMode] = useState(false);
+
   const numRotations = useRef(0);
   const isMounted = useRef(false);
 
-  const updateRotation = (side, num_rotations = 1) => {
+  const updateRotation = (side, num_rotations = 1, prime = false) => {
     setActiveSide(side);
     numRotations.current += num_rotations;
   };
@@ -106,6 +109,7 @@ function App() {
       const randomIndex = Math.floor(Math.random() * items.length);
       const randomMove = items[randomIndex];
       enqueueItem(randomMove, 1);
+      console.log(randomMove);
     }
   }, [enqueueItem]);
 
@@ -140,8 +144,9 @@ function App() {
 
   useEffect(() => {
     if (!isMounted.current) return;
+    if (playMode) return;
 
-    if (clearQueue || isMoveDone) {
+    if (clearQueue || isMoveDone || playMode) {
       if (movesQueue.length !== 0) {
         try {
           dequeueItem()
@@ -154,7 +159,7 @@ function App() {
       setClearQueue(false);
       setMoveDone(false);
     }
-  }, [isMoveDone, clearQueue]);
+  }, [isMoveDone, clearQueue, playMode]);
 
   useEffect(() => {
     isMounted.current = true;
@@ -265,7 +270,14 @@ function App() {
               />
               <Route
                 path="/Solve"
-                element={<SolvePage scramble={scramble} solve={solve} />}
+                element={
+                  <SolvePage
+                    scramble={scramble}
+                    solve={solve}
+                    playMode={playMode}
+                    setPlayMode={setPlayMode}
+                  />
+                }
               />
             </Routes>
           </div>

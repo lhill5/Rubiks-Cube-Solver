@@ -10,8 +10,6 @@ import { ReactComponent as PauseButtonIcon } from "../images/pause-button.svg";
 import { ReactComponent as FastForwardIcon } from "../images/fast-forward.svg";
 
 export default function SolvePage(props) {
-  const [paused, setPaused] = useState(true);
-
   return (
     <div className={styles["solve-buttons"]}>
       <div className={styles["button-cls"]}>
@@ -28,17 +26,15 @@ export default function SolvePage(props) {
           className={classnames(styles["flip"], styles["control-icon"])}
         ></FastForwardIcon>
 
-        {paused ? (
+        {props.playMode ? (
           <PlayButtonIcon
             className={styles["control-icon"]}
-            onClick={() => setPaused(!paused)}
-          >
-            H
-          </PlayButtonIcon>
+            onClick={() => props.setPlayMode(!props.playMode)}
+          />
         ) : (
           <PauseButtonIcon
             className={styles["control-icon"]}
-            onClick={() => setPaused(!paused)}
+            onClick={() => props.setPlayMode(!props.playMode)}
           />
         )}
 
