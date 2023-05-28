@@ -211,7 +211,7 @@ const Cube = (props) => {
 
   useEffect(() => {
     props.setCubeState(cubePosition.current, cubeColors);
-  }, [useMemo(() => [cubePosition, cubeColors], [cubePosition, cubeColors])]);
+  }, [cubePosition, cubeColors]);
 
   useEffect(() => {
     const hiddenColor = "#808080";
@@ -274,6 +274,9 @@ const Cube = (props) => {
   const handleMeshClick = (event) => {
     // prevent cubes behind clicked cube from triggering function call
     event.stopPropagation();
+
+    // user clicked on cube without having color selected, do nothing
+    if (props.activeColor === "") return;
 
     // if clicked on center cube, ignore color change
     const { x, y, z } = cubePosition.current;

@@ -1,6 +1,9 @@
 .svg-header {
+  width: 20rem;
   position: absolute;
   z-index: 1;
+  display: flex;
+  justify-content: flex-start;
 }
 
 .svg {
@@ -10,11 +13,11 @@
 }
 
 .reset-svg {
-  top: 25px;
+  /* top: 25px; */
   left: 25px;
 }
 
 .cube-svg {
-  top: 25px;
+  /* top: 25px; */
   left: 90px;
 }

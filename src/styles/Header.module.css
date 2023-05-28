@@ -1,6 +1,6 @@
 .header {
   width: 100vw;
-  height: 9vh;
+  height: 5rem;
   background: #212121;
   margin: 0;
   padding: 0;
@@ -12,10 +12,16 @@
 }
 
 .header-text {
-  width: 30vw;
+  width: 35rem;
+  /* border: 1px red solid; */
+
   display: flex;
   margin: 0;
   padding: 0;
+
+  @media (max-width: 768px) {
+    width: 22.5rem;
+  }
 }
 
 .section {

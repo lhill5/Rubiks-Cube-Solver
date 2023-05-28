@@ -1,0 +1,88 @@
+.scroll-header {
+  height: 3rem;
+
+  display: flex;
+  flex-direction: row;
+  position: absolute;
+  z-index: 1;
+
+  align-items: center;
+  border: 1px red solid;
+}
+
+.svg-header {
+  --_spacer: 16px;
+  width: 30rem;
+
+  display: grid;
+  gap: var(--_spacer);
+  grid-auto-flow: column;
+  grid-auto-columns: 9.25%;
+  /* padding: 0 var(--_spacer) var(--_spacer); */
+
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+}
+
+.svg-header span {
+  width: 2.5rem;
+  height: 2.5rem;
+  aspect-ratio: 1/1;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  text-align: center;
+  border-radius: 5px;
+  color: white;
+}
+
+.snaps-inline {
+  scroll-snap-type: inline mandatory;
+  scroll-padding-inline: var(--_spacer, 1rem);
+}
+
+.snaps-inline > * {
+  scroll-snap-align: start;
+}
+
+.F_move {
+  background: var(--front-color);
+}
+
+.B_move {
+  background: var(--back-color);
+}
+
+.L_move {
+  background: var(--left-color);
+}
+
+.R_move {
+  background: var(--right-color);
+}
+
+.U_move {
+  background: var(--up-color);
+  color: #212121 !important;
+}
+
+.D_move {
+  background: var(--down-color);
+  color: #212121 !important;
+}
+
+.scroll-icon {
+  width: 2rem;
+  height: 2rem;
+  margin: 0 10px;
+}
+
+.scroll-icon:hover {
+  cursor: pointer;
+}
+
+.right-scroll {
+  transform: scaleX(-1);
+}

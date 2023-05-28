@@ -9,11 +9,15 @@ import SolvePage from "./pages/SolvePage";
 
 import RubiksCube from "./components/RubiksCube";
 import ClearCube from "./components/ClearCube";
-import ScrambleCube from "./components/ScrambleCube";
+import PivotCube from "./components/PivotCube";
+import SolutionHeader from "./components/SolutionHeader";
 
 import Header from "./components/Header";
 import styles from "./styles/App.module.css";
-import { convertCoordToSquareNotations } from "./utils/rubiksCubeConverter";
+import {
+  convertCoordToSquareNotations,
+  hasBlankSquare,
+} from "./utils/rubiksCubeConverter";
 import { solveRubiksCube } from "./utils/rubiksCubeSolver";
 
 function App() {
@@ -24,8 +28,13 @@ function App() {
   const [rubiksCubeState, setRubiksCubeState] = useState({});
   const [rubiksCubeSolution, setRubiksCubeSolution] = useState("");
   const [clearQueue, setClearQueue] = useState(false);
+
   const [clearCube, toggleClearCube] = useState(false);
   const [fillCube, toggleFillCube] = useState(false);
+  const [pivotLeft, togglePivotLeft] = useState(false);
+  const [pivotRight, togglePivotRight] = useState(false);
+  const [pivotUp, togglePivotUp] = useState(false);
+  const [pivotDown, togglePivotDown] = useState(false);
 
   // tracks which ColorPicker box is selected
   const [activeColor, setActiveColor] = useState("");
@@ -101,6 +110,13 @@ function App() {
   }, [enqueueItem]);
 
   const solve = () => {
+    if (hasBlankSquare(rubiksCubeState)) {
+      alert(
+        "Rubik's cube provided is invalid. At least 1 square is uncolored, make sure all squares are colored."
+      );
+      return;
+    }
+
     let cubeSolverConfig = [
       ["U1", "U2", "U3", "U4", "U5", "U6", "U7", "U8", "U9"],
       ["R1", "R2", "R3", "R4", "R5", "R6", "R7", "R8", "R9"],
@@ -114,8 +130,12 @@ function App() {
     );
 
     solveRubiksCube(formattedRCSolution)
-      .then((data) => setRubiksCubeSolution(data.solution))
-      .catch((error) => console.error(error));
+      .then((data) => {
+        setRubiksCubeSolution(data.solution);
+      })
+      .catch((error) => {
+        alert(error.message);
+      });
   };
 
   useEffect(() => {
@@ -190,7 +210,18 @@ function App() {
             ) : null}
 
             {page === "Scramble" ? (
-              <ScrambleCube scramble={scramble}></ScrambleCube>
+              <PivotCube
+                togglePivotLeft={() => togglePivotLeft(!pivotLeft)}
+                togglePivotRight={() => togglePivotRight(!pivotRight)}
+                togglePivotUp={() => togglePivotUp(!pivotUp)}
+                togglePivotDown={() => togglePivotDown(!pivotDown)}
+              ></PivotCube>
+            ) : null}
+
+            {page === "Solve" ? (
+              <SolutionHeader
+                rubiksCubeSolution={rubiksCubeSolution}
+              ></SolutionHeader>
             ) : null}
 
             <Canvas>
@@ -206,6 +237,10 @@ function App() {
                 activeColor={activeColor}
                 clearCube={clearCube}
                 fillCube={fillCube}
+                pivotLeft={pivotLeft}
+                pivotRight={pivotRight}
+                pivotUp={pivotUp}
+                pivotDown={pivotDown}
               />
             </Canvas>
 
@@ -213,7 +248,10 @@ function App() {
               <Route
                 path="/Scramble"
                 element={
-                  <ScramblePage updateRotation={updateRotation}></ScramblePage>
+                  <ScramblePage
+                    updateRotation={updateRotation}
+                    scramble={scramble}
+                  ></ScramblePage>
                 }
               />
               <Route

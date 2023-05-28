@@ -1,11 +1,12 @@
-.main-btns {
+.solve-buttons {
+  width: 15rem;
   display: flex;
-  flex-direction: row;
-  justify-content: space-around;
-  width: 24rem;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
-.btn-group button {
+.button-cls button {
   border: none;
   width: 7.5rem;
   height: 2.5rem;
@@ -14,4 +15,24 @@
   color: #212121;
   font-size: 1.2em;
   text-align: center;
+}
+
+.row {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+
+  width: 15rem;
+
+  margin-top: 1.5rem;
+}
+
+.flip {
+  transform: scaleX(-1);
+}
+
+.control-icon {
+  width: 2rem;
+  height: 2rem;
 }

@@ -11,6 +11,9 @@ export default function ScramblePage(props) {
       <RotationControls
         updateRotation={props.updateRotation}
       ></RotationControls>
+      <div className={styles["btn-header"]}>
+        <button onClick={props.scramble}>Scramble</button>
+      </div>
     </div>
   );
 }

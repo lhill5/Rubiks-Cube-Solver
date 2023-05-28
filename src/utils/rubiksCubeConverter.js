@@ -11,11 +11,16 @@ export const convertCoordToSquareNotations = (position, colors) => {
     return result;
   }, {});
 
-  //   if (x === 1 && y === 1 && z === 1) {
-  //     console.log(cube_notations);
-  //   }
-
   return cube_notations_obj;
+};
+
+export const hasBlankSquare = (obj) => {
+  for (let key in obj) {
+    if (typeof obj[key] === "undefined") {
+      return true;
+    }
+  }
+  return false;
 };
 
 const CoordToSquares = (position, colors) => {

@@ -1,0 +1,38 @@
+.svg-header {
+  width: 20rem;
+  position: absolute;
+  z-index: 1;
+  display: flex;
+  justify-content: space-around;
+
+  /* border: 1px red solid; */
+}
+
+.svg {
+  width: 2.75em;
+  height: 2.75em;
+}
+
+.pivot-left-svg {
+  top: 25px;
+  left: 25px;
+  transform: rotate(0deg) scaleX(-1);
+}
+
+.pivot-right-svg {
+  top: 25px;
+  left: 25px;
+  transform: rotate(0deg) scaleX(1);
+}
+
+.pivot-up-svg {
+  top: 25px;
+  left: 25px;
+  transform: rotate(90deg) scaleX(-1);
+}
+
+.pivot-down-svg {
+  top: 25px;
+  left: 25px;
+  transform: rotate(90deg) scaleX(1);
+}

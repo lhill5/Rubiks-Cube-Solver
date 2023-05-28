@@ -9,10 +9,11 @@
 }
 
 .rubiks-cube {
-  /* border: 1px red solid; */
-
-  width: 20vw;
-  height: 55vh;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  width: 20rem;
+  height: 32rem;
 }
 
 .scramble-cube {

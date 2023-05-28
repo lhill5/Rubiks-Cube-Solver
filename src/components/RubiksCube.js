@@ -55,7 +55,51 @@ function RubiksCube(props) {
     //   setCube({ scale: hovering ? [1.0, 1.05, 1.05] : [1, 1, 1] }),
   });
 
-  // add correct cubes to active side
+  // --------------------------------------------
+  // ---rotates entire cube left/right/up/down---
+  // --------------------------------------------
+  const pivotCube = (x_Rotations = 0, y_Rotations = 0, x_CW = 1, y_CW = 1) => {
+    setCube({
+      rotation: [
+        RubiksCubeRef.current.rotation.x + x_Rotations * (Math.PI / 2) * x_CW,
+        RubiksCubeRef.current.rotation.y + y_Rotations * (Math.PI / 2) * y_CW,
+        0,
+      ],
+    });
+
+    xPos.current += x_Rotations * (Math.PI / 2) * x_CW;
+    yPos.current += y_Rotations * (Math.PI / 2) * y_CW;
+  };
+
+  useEffect(() => {
+    if (isMounted.current) {
+      console.log("pivot left");
+      pivotCube(0, 1, 0, -1);
+    }
+  }, [props.pivotLeft]);
+
+  useEffect(() => {
+    if (isMounted.current) {
+      pivotCube(0, 1, 0, 1);
+    }
+  }, [props.pivotRight]);
+
+  useEffect(() => {
+    if (isMounted.current) {
+      pivotCube(2, 0, 1, 0);
+    }
+  }, [props.pivotUp]);
+
+  useEffect(() => {
+    if (isMounted.current) {
+      pivotCube(2, 0, -1, 0);
+    }
+  }, [props.pivotDown]);
+
+  // -----------------------------------------------
+  // adds off cubes on active side to the same group
+  // Can then rotate entire face (F/B/L/R/U/D)
+  // -----------------------------------------------
   useEffect(() => {
     if (props.activeSide === "") return;
 
@@ -73,6 +117,9 @@ function RubiksCube(props) {
     toggleSideUpdate(!sideUpdate);
   }, [props.activeSide]);
 
+  // --------------------------------------------------
+  // Used to let App.js know that cube is done rotating
+  // --------------------------------------------------
   useEffect(() => {
     if (isMounted.current) {
       if (cubesUpdated === 9) {
