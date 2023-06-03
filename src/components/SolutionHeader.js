@@ -5,7 +5,7 @@ import classnames from "classnames";
 import styles from "../styles/SolutionHeader.module.css";
 import { ReactComponent as ArrowIcon } from "../images/arrow.svg";
 
-const getColorClass = (move) => {
+const getColorClass = (move, index, current_index) => {
   return classnames({
     [styles.F_move]: move === "F",
     [styles.B_move]: move === "B",
@@ -13,6 +13,7 @@ const getColorClass = (move) => {
     [styles.R_move]: move === "R",
     [styles.U_move]: move === "U",
     [styles.D_move]: move === "D",
+    [styles.highlight_move]: index === current_index,
   });
 };
 
@@ -20,11 +21,11 @@ export default function SolutionHeader(props) {
   const scrollRef = useRef(0);
 
   const handleScrollLeft = () => {
-    scrollRef.current.scrollBy({ left: -225, behavior: "smooth" });
+    scrollRef.current.scrollBy({ left: -300, behavior: "smooth" });
   };
 
   const handleScrollRight = () => {
-    scrollRef.current.scrollBy({ left: 225, behavior: "smooth" });
+    scrollRef.current.scrollBy({ left: 300, behavior: "smooth" });
   };
 
   return (
@@ -37,7 +38,12 @@ export default function SolutionHeader(props) {
         className={classnames(styles["svg-header"], styles["snaps-inline"])}
       >
         {props.rubiksCubeSolution.split(" ").map((move, index) => {
-          const color_class = getColorClass(move[0]);
+          const color_class = getColorClass(
+            move[0],
+            index,
+            props.solutionCounter
+          );
+
           return (
             <span key={index} className={color_class}>
               {move}

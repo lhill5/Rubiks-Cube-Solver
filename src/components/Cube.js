@@ -72,16 +72,17 @@ const Cube = (props) => {
 
   // todo - write this as a function, used in Side.js too
   const isCubeOnActiveSide = () => {
-    if (props.activeSide === "F" && cubePosition.current.z === 1) return true;
-    else if (props.activeSide === "B" && cubePosition.current.z === -1)
+    if (props.currentMove.side === "F" && cubePosition.current.z === 1)
       return true;
-    else if (props.activeSide === "L" && cubePosition.current.x === -1)
+    else if (props.currentMove.side === "B" && cubePosition.current.z === -1)
       return true;
-    else if (props.activeSide === "R" && cubePosition.current.x === 1)
+    else if (props.currentMove.side === "L" && cubePosition.current.x === -1)
       return true;
-    else if (props.activeSide === "U" && cubePosition.current.y === 1)
+    else if (props.currentMove.side === "R" && cubePosition.current.x === 1)
       return true;
-    else if (props.activeSide === "D" && cubePosition.current.y === -1)
+    else if (props.currentMove.side === "U" && cubePosition.current.y === 1)
+      return true;
+    else if (props.currentMove.side === "D" && cubePosition.current.y === -1)
       return true;
     return false;
   };
@@ -114,19 +115,35 @@ const Cube = (props) => {
   };
 
   const getNextSide = (active_side, cur_side) => {
-    let num_iters = props.numRotations;
+    let num_iters = props.currentMove.rotations;
+    let prime = props.currentMove.prime;
     let cur_index = sideToIndex[active_side][cur_side];
-    let nxt_index = (cur_index + num_iters) % 4;
+    let nxt_index;
+
+    if (prime) {
+      nxt_index = (4 + ((cur_index - num_iters) % 4)) % 4;
+    } else {
+      nxt_index = (cur_index + num_iters) % 4;
+    }
+
     return indexToSide[active_side][nxt_index];
   };
 
+  /*
+    -1 -> 3
+    -2 -> 2
+    -3 -> 1
+
+    4 + (x % 4)
+  */
+
   useEffect(() => {
-    if (props.activeSide === "") return;
+    if (props.currentMove.side === "") return;
 
     if (isCubeOnActiveSide()) {
       if (props.isAnimationDone && !isFirstRender.current) {
         let updatedCubeColors = null;
-        switch (props.activeSide) {
+        switch (props.currentMove.side) {
           case "F":
             updatedCubeColors = {
               ...cubeColors,

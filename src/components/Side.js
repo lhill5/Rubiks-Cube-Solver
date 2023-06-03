@@ -3,7 +3,7 @@ import { Canvas, useThree, useFrame } from "@react-three/fiber";
 import { useSpring, animated } from "@react-spring/three";
 import debounce from "lodash.debounce";
 
-const getRotatedPosition = (side, position3d) => {
+const getRotatedPosition = (side, position3d, prime) => {
   // handles front/right/up rotations
 
   let position = position3d.slice();
@@ -30,13 +30,13 @@ const getRotatedPosition = (side, position3d) => {
   rotated_prime_position = rotated_position.map((num) => -num);
 
   if (["F", "R", "D"].includes(side)) {
-    if ("'".includes(side)) {
+    if (prime) {
       return rotated_prime_position;
     } else {
       return rotated_position;
     }
   } else {
-    if ("'".includes(side)) {
+    if (prime) {
       return rotated_position;
     } else {
       return rotated_prime_position;
@@ -50,49 +50,49 @@ const convertToObj = (arr) => {
   return obj;
 };
 
-const getFrontRotation = (side, position, num_rotations) => {
+const getFrontRotation = (side, position, num_rotations, prime) => {
   for (let i = 0; i < num_rotations; i++) {
-    position = getRotatedPosition(side, position);
+    position = getRotatedPosition(side, position, prime);
     position.splice(2, 0, 1);
   }
   return convertToObj(position);
 };
 
-const getBackRotation = (side, position, num_rotations) => {
+const getBackRotation = (side, position, num_rotations, prime) => {
   for (let i = 0; i < num_rotations; i++) {
-    position = getRotatedPosition(side, position);
+    position = getRotatedPosition(side, position, prime);
     position.splice(2, 0, -1);
   }
   return convertToObj(position);
 };
 
-const getLeftRotation = (side, position, num_rotations) => {
+const getLeftRotation = (side, position, num_rotations, prime) => {
   for (let i = 0; i < num_rotations; i++) {
-    position = getRotatedPosition(side, position);
+    position = getRotatedPosition(side, position, prime);
     position.splice(0, 0, -1);
   }
   return convertToObj(position);
 };
 
-const getRightRotation = (side, position, num_rotations) => {
+const getRightRotation = (side, position, num_rotations, prime) => {
   for (let i = 0; i < num_rotations; i++) {
-    position = getRotatedPosition(side, position);
+    position = getRotatedPosition(side, position, prime);
     position.splice(0, 0, 1);
   }
   return convertToObj(position);
 };
 
-const getUpRotation = (side, position, num_rotations) => {
+const getUpRotation = (side, position, num_rotations, prime) => {
   for (let i = 0; i < num_rotations; i++) {
-    position = getRotatedPosition(side, position);
+    position = getRotatedPosition(side, position, prime);
     position.splice(1, 0, 1);
   }
   return convertToObj(position);
 };
 
-const getDownRotation = (side, position, num_rotations) => {
+const getDownRotation = (side, position, num_rotations, prime) => {
   for (let i = 0; i < num_rotations; i++) {
-    position = getRotatedPosition(side, position);
+    position = getRotatedPosition(side, position, prime);
     position.splice(1, 0, -1);
   }
   return convertToObj(position);
@@ -114,10 +114,12 @@ const Side = (props) => {
     },
   }));
 
-  const rotateSide = (num_rotations) => {
+  const rotateSide = (num_rotations, prime) => {
     const side = props.side;
     const cw = ["F", "R", "U"].includes(side) ? 1 : -1;
-    const rotation_angle = cw * num_rotations * (-Math.PI / 2);
+    const prime_dir = prime ? -1 : 1;
+
+    const rotation_angle = cw * prime_dir * num_rotations * (-Math.PI / 2);
 
     const x = ["L", "R"].includes(side)
       ? props.group.current.rotation.x + rotation_angle
@@ -167,23 +169,24 @@ const Side = (props) => {
   };
 
   useEffect(() => {
-    if (props.side !== props.activeSide) return;
+    if (props.side !== props.currentMove.side) return;
 
     const handleDebouncedClick = debounce(() => {
       // make sure there's rotations in queue for side
       // and that we're not already animating
-      if (props.numRotations.current !== 0 && props.isAnimationDone) {
+      if (props.currentMove.rotations !== 0 && props.isAnimationDone) {
         // assigns cubes to current side by ref before rotation
         // assignCubesToSide(props.side);
         // prevents multiple animations from happening at the same time
         props.setAnimationDone(false);
 
-        let num_rotations = props.numRotations.current;
-        rotateSide(num_rotations);
+        let num_rotations = props.currentMove.rotations;
+        let prime = props.currentMove.prime;
+        rotateSide(num_rotations, prime);
       }
     }, 50);
 
-    if (props.numRotations.current > 0) {
+    if (props.currentMove.rotations > 0) {
       handleDebouncedClick();
     }
     // if user clicks rotate button again, reset timer and wait for user
@@ -194,20 +197,20 @@ const Side = (props) => {
   }, [props.sideUpdate]);
 
   useEffect(() => {
-    if (props.side !== props.activeSide) return;
+    if (props.side !== props.currentMove.side) return;
 
     let cubes = props.cubesRef.current.children.slice();
     cubes.filter((cube) => cube.position[axis] === axis_lvl);
 
     for (let cube of cubes) {
-      if (props.side === props.activeSide && isCubeOnSide(cube)) {
+      if (props.side === props.currentMove.side && isCubeOnSide(cube)) {
         props.group.current.add(cube);
       }
     }
   }, [props.sideUpdate]);
 
   useEffect(() => {
-    if (props.side !== props.activeSide) return;
+    if (props.side !== props.currentMove.side) return;
 
     let cubes = props.group.current.children;
 
@@ -219,42 +222,48 @@ const Side = (props) => {
             new_position = getFrontRotation(
               props.side,
               Object.values(cube.position),
-              props.numRotations.current
+              props.currentMove.rotations,
+              props.currentMove.prime
             );
             break;
           case "B":
             new_position = getBackRotation(
               props.side,
               Object.values(cube.position),
-              props.numRotations.current
+              props.currentMove.rotations,
+              props.currentMove.prime
             );
             break;
           case "U":
             new_position = getUpRotation(
               props.side,
               Object.values(cube.position),
-              props.numRotations.current
+              props.currentMove.rotations,
+              props.currentMove.prime
             );
             break;
           case "D":
             new_position = getDownRotation(
               props.side,
               Object.values(cube.position),
-              props.numRotations.current
+              props.currentMove.rotations,
+              props.currentMove.prime
             );
             break;
           case "L":
             new_position = getLeftRotation(
               props.side,
               Object.values(cube.position),
-              props.numRotations.current
+              props.currentMove.rotations,
+              props.currentMove.prime
             );
             break;
           default:
             new_position = getRightRotation(
               props.side,
               Object.values(cube.position),
-              props.numRotations.current
+              props.currentMove.rotations,
+              props.currentMove.prime
             );
         }
 

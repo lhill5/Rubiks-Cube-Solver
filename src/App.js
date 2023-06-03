@@ -14,6 +14,8 @@ import SolutionHeader from "./components/SolutionHeader";
 
 import Header from "./components/Header";
 import styles from "./styles/App.module.css";
+
+import { convertStrMoveToObj, equalObjs } from "./utils/helper";
 import {
   convertCoordToSquareNotations,
   hasBlankSquare,
@@ -21,16 +23,26 @@ import {
 import { solveRubiksCube } from "./utils/rubiksCubeSolver";
 
 function App() {
+  const isMounted = useRef(false);
+
   const [page, setPage] = useState("");
-  const [activeSide, setActiveSide] = useState("");
-  const [movesQueue, setMovesQueue] = useState([]);
-  const [isMoveDone, setMoveDone] = useState(false);
   const [rubiksCubeState, setRubiksCubeState] = useState({});
   const [rubiksCubeSolution, setRubiksCubeSolution] = useState("");
-  const [clearQueue, setClearQueue] = useState(false);
 
+  // used to keep track of which move of the solution we're on
+  const [solutionCounter, setSolutionCounter] = useState(0);
+
+  const [currentMove, setCurrentMove] = useState({});
+  const [movesQueue, setMovesQueue] = useState([]);
+  const [popQueue, setPopQueue] = useState(false);
+  const [manualMove, setManualMove] = useState(false);
+
+  // sets cube colors blank to simplify user input
   const [clearCube, toggleClearCube] = useState(false);
+  // sets cube colors in solve state to reset user input
   const [fillCube, toggleFillCube] = useState(false);
+
+  // used to rotate entire cube left/right/up/down
   const [pivotLeft, togglePivotLeft] = useState(false);
   const [pivotRight, togglePivotRight] = useState(false);
   const [pivotUp, togglePivotUp] = useState(false);
@@ -38,42 +50,69 @@ function App() {
 
   // tracks which ColorPicker box is selected
   const [activeColor, setActiveColor] = useState("");
+  // used on Solve page, if not in pauseMode then solution is shown step-by-step
+  const [pauseMode, setPauseMode] = useState(false);
 
-  // used on Solve page, if not in playMode then solution is shown step-by-step
-  const [playMode, setPlayMode] = useState(false);
-
-  const numRotations = useRef(0);
-  const isMounted = useRef(false);
-
-  const updateRotation = (side, num_rotations = 1, prime = false) => {
-    setActiveSide(side);
-    numRotations.current += num_rotations;
+  const updateRotation = (move) => {
+    setCurrentMove(move);
   };
 
   const resetRotation = useCallback(() => {
-    setActiveSide("");
-    numRotations.current = 0;
+    setCurrentMove({ side: "", rotations: 0, prime: "" });
   }, []);
 
-  const enqueueItem = useCallback((side, num_rotations) => {
+  const enqueueItem = useCallback((move) => {
     return new Promise((resolve) => {
       setMovesQueue((prevQueue) => {
         // Check if the movesQueue is not empty and the last side has the same key as the new side
         let newQueue;
         if (
           prevQueue.length > 0 &&
-          prevQueue[prevQueue.length - 1].side === side
+          prevQueue[prevQueue.length - 1].side === move.side
         ) {
-          // Get the last side in the previous queue and increment its value by 1
-          const lastSide = prevQueue[prevQueue.length - 1];
-          newQueue = [
-            ...prevQueue.slice(0, -1),
-            { side: side, rotations: lastSide.rotations + 1 },
-          ];
+          // if current move is same as previous move, replace last queue item with # of rotations
+          const lastMove = prevQueue[prevQueue.length - 1];
+          const new_num_rotations = lastMove.rotations + move.rotations;
+          const prime = new_num_rotations < 0;
+
+          if (new_num_rotations === 0) {
+            newQueue = [...prevQueue.slice(0, -1)];
+          } else {
+            newQueue = [
+              ...prevQueue.slice(0, -1),
+              {
+                side: move.side,
+                rotations: lastMove.rotations + move.rotations,
+                prime: prime,
+              },
+            ];
+          }
         } else {
           // Otherwise, add the new side with the number of rotatations to the end of the queue
-          newQueue = [...prevQueue, { side: side, rotations: num_rotations }];
+          const prime = move.rotations < 0;
+          newQueue = [
+            ...prevQueue,
+            { side: move.side, rotations: move.rotations, prime: prime },
+          ];
         }
+        resolve(newQueue);
+        return newQueue;
+      });
+    });
+  }, []);
+
+  const enqueueItemLeft = useCallback((move) => {
+    // adds item to beginning of queue (highest priority)
+    // doesn't account for 2nd move being a duplicate of 1st move
+
+    return new Promise((resolve) => {
+      setMovesQueue((prevQueue) => {
+        let newQueue;
+        newQueue = [
+          ...prevQueue,
+          { side: move.side, rotations: move.rotations, prime: move.prime },
+        ];
+
         resolve(newQueue);
         return newQueue;
       });
@@ -103,13 +142,12 @@ function App() {
   };
 
   const scramble = useCallback(async () => {
-    setClearQueue(true);
-    const items = ["F", "B", "L", "R", "U", "D"];
+    setPopQueue(true);
+    const sides = ["F", "B", "L", "R", "U", "D"];
     for (let i = 0; i < 20; i++) {
-      const randomIndex = Math.floor(Math.random() * items.length);
-      const randomMove = items[randomIndex];
-      enqueueItem(randomMove, 1);
-      console.log(randomMove);
+      const randomIndex = Math.floor(Math.random() * sides.length);
+      const randomSide = sides[randomIndex];
+      enqueueItem({ side: randomSide, rotations: 1, prime: false });
     }
   }, [enqueueItem]);
 
@@ -136,30 +174,80 @@ function App() {
     solveRubiksCube(formattedRCSolution)
       .then((data) => {
         setRubiksCubeSolution(data.solution);
+        setSolutionCounter(0);
       })
       .catch((error) => {
         alert(error.message);
       });
   };
 
+  const goBackMove = () => {
+    if (solutionCounter === 0) return;
+
+    // get previous move & convert to move obj
+    let prev_move_str = rubiksCubeSolution.split(" ")[solutionCounter - 1];
+    let side = prev_move_str[0];
+    let rotations = prev_move_str[prev_move_str.length - 1];
+    let prime = prev_move_str.includes("'");
+    let prev_move = { side: side, rotations: rotations, prime: prime };
+
+    // do opposite of previous move (prime = !prime)
+    prev_move.prime = !prev_move.prime;
+
+    // add previous move to beginning of movesQueue & run
+    enqueueItemLeft(prev_move);
+    setManualMove(true);
+
+    // move back 1 move in solution
+    setSolutionCounter(solutionCounter - 1);
+  };
+
+  const goForwardMove = () => {
+    let solution = rubiksCubeSolution.split(" ");
+
+    // cannot go forward if at end of solution
+    if (solutionCounter >= solution.length) return;
+
+    // get next solution move
+    let nxt_solution_move = convertStrMoveToObj(solution[solutionCounter]);
+
+    // if already solved cube or current move doesn't match solution's next move (check if this can ever happen and condition1 be false)
+    if (
+      movesQueue.length === 0 ||
+      !equalObjs(movesQueue[0], nxt_solution_move)
+    ) {
+      // add to queue (priority 1)
+      enqueueItemLeft(nxt_solution_move);
+    }
+
+    setManualMove(true);
+    setSolutionCounter(solutionCounter + 1);
+  };
+
   useEffect(() => {
     if (!isMounted.current) return;
-    if (playMode) return;
+    if (pauseMode && !manualMove) {
+      setPopQueue(false);
+      return;
+    }
 
-    if (clearQueue || isMoveDone || playMode) {
+    // if automatic move (popQueue) or in pause mode
+    // and user manually clicked forward/backward then move
+    if (popQueue || manualMove) {
       if (movesQueue.length !== 0) {
         try {
           dequeueItem()
             .then((move) => {
-              updateRotation(move.side, move.rotations);
+              updateRotation(move);
+              if (!manualMove) setSolutionCounter(solutionCounter + 1);
             })
             .catch((error) => console.error(error));
         } catch (error) {}
       }
-      setClearQueue(false);
-      setMoveDone(false);
+      setPopQueue(false);
+      setManualMove(false);
     }
-  }, [isMoveDone, clearQueue, playMode]);
+  }, [popQueue, pauseMode, manualMove]);
 
   useEffect(() => {
     isMounted.current = true;
@@ -170,9 +258,13 @@ function App() {
       const solution_array = rubiksCubeSolution.split(" ");
       for (let move of solution_array) {
         const [side, num_rotations] = move.split("");
-        enqueueItem(side, parseInt(num_rotations));
+        enqueueItem({
+          side: side,
+          rotations: parseInt(num_rotations),
+          prime: false,
+        });
       }
-      setClearQueue(true);
+      setPopQueue(true);
     }
   }, [rubiksCubeSolution]);
 
@@ -201,6 +293,10 @@ function App() {
     };
   }, []); // Make sure to include an empty dependency array to run the effect only once on mount
 
+  useEffect(() => {
+    console.log(pauseMode);
+  }, [pauseMode]);
+
   return (
     <>
       <Router>
@@ -226,6 +322,7 @@ function App() {
             {page === "Solve" ? (
               <SolutionHeader
                 rubiksCubeSolution={rubiksCubeSolution}
+                solutionCounter={solutionCounter}
               ></SolutionHeader>
             ) : null}
 
@@ -234,11 +331,10 @@ function App() {
               <ambientLight />
               <pointLight position={[10, 10, 10]} />
               <RubiksCube
-                activeSide={activeSide}
-                numRotations={numRotations}
+                currentMove={currentMove}
                 resetRotation={resetRotation}
                 setCubeState={setCubeState}
-                setMoveDone={(state) => setMoveDone(state)}
+                setPopQueue={(state) => setPopQueue(state)}
                 activeColor={activeColor}
                 clearCube={clearCube}
                 fillCube={fillCube}
@@ -274,8 +370,10 @@ function App() {
                   <SolvePage
                     scramble={scramble}
                     solve={solve}
-                    playMode={playMode}
-                    setPlayMode={setPlayMode}
+                    pauseMode={pauseMode}
+                    setPauseMode={setPauseMode}
+                    goBackMove={goBackMove}
+                    goForwardMove={goForwardMove}
                   />
                 }
               />

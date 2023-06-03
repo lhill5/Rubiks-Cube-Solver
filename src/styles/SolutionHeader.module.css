@@ -73,6 +73,10 @@
   color: #212121 !important;
 }
 
+.highlight_move {
+  border: 5px purple solid !important;
+}
+
 .scroll-icon {
   width: 2rem;
   height: 2rem;

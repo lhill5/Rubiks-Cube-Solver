@@ -24,21 +24,25 @@ export default function SolvePage(props) {
       <div className={classnames(styles["row"], styles["icon-header"])}>
         <FastForwardIcon
           className={classnames(styles["flip"], styles["control-icon"])}
+          onClick={props.goBackMove}
         ></FastForwardIcon>
 
-        {props.playMode ? (
+        {props.pauseMode ? (
           <PlayButtonIcon
             className={styles["control-icon"]}
-            onClick={() => props.setPlayMode(!props.playMode)}
+            onClick={() => props.setPauseMode(!props.pauseMode)}
           />
         ) : (
           <PauseButtonIcon
             className={styles["control-icon"]}
-            onClick={() => props.setPlayMode(!props.playMode)}
+            onClick={() => props.setPauseMode(!props.pauseMode)}
           />
         )}
 
-        <FastForwardIcon className={styles["control-icon"]} />
+        <FastForwardIcon
+          className={styles["control-icon"]}
+          onClick={props.goForwardMove}
+        />
       </div>
     </div>
   );
