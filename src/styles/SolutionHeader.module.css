@@ -73,6 +73,7 @@
 
 .highlight_move {
   border: 1px white solid;
+  /* transform: scale(1.2); */
 }
 
 .scroll-icon {

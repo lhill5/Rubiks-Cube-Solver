@@ -30,9 +30,12 @@ export default function SolutionHeader(props) {
 
   return (
     <div className={styles["scroll-header"]}>
-      {/* <ArrowIcon className={styles["scroll-icon"]} onClick={handleScrollLeft}>
-        Left
-      </ArrowIcon>
+      {props.rubiksCubeSolution.length !== 0 ? (
+        <ArrowIcon className={styles["scroll-icon"]} onClick={handleScrollLeft}>
+          Left
+        </ArrowIcon>
+      ) : null}
+
       <div
         ref={scrollRef}
         className={classnames(styles["svg-header"], styles["snaps-inline"])}
@@ -52,12 +55,15 @@ export default function SolutionHeader(props) {
           );
         })}
       </div>
-      <ArrowIcon
-        className={classnames(styles["scroll-icon"], styles["right-scroll"])}
-        onClick={handleScrollRight}
-      >
-        Right
-      </ArrowIcon> */}
+
+      {props.rubiksCubeSolution.length !== 0 ? (
+        <ArrowIcon
+          className={classnames(styles["scroll-icon"], styles["right-scroll"])}
+          onClick={handleScrollRight}
+        >
+          Right
+        </ArrowIcon>
+      ) : null}
     </div>
   );
 }

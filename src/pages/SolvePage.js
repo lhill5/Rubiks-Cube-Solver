@@ -1,7 +1,4 @@
 import React, { useState } from "react";
-import RubiksCube from "../components/RubiksCube";
-import { Canvas } from "@react-three/fiber";
-import { PerspectiveCamera } from "@react-three/drei";
 import classnames from "classnames";
 
 import styles from "../styles/SolvePage.module.css";

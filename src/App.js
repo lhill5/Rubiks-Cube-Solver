@@ -30,7 +30,7 @@ import { solveRubiksCube } from "./utils/rubiksCubeSolver";
 function App() {
   const isMounted = useRef(false);
 
-  const [page, setPage] = useState("");
+  const [page, setPage] = useState("Scramble");
   const [rubiksCubeState, setRubiksCubeState] = useState({});
   const [rubiksCubeSolution, setRubiksCubeSolution] = useState("");
 

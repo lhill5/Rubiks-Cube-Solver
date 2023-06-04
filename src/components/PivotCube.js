@@ -6,7 +6,7 @@ import styles from "../styles/PivotCube.module.css";
 export default function ScrambleCube(props) {
   return (
     <div className={styles["svg-header"]}>
-      {/* <PivotSVG
+      <PivotSVG
         onClick={props.togglePivotLeft}
         className={classnames(styles["svg"], styles["pivot-left-svg"])}
       ></PivotSVG>
@@ -21,7 +21,7 @@ export default function ScrambleCube(props) {
       <PivotSVG
         onClick={props.togglePivotDown}
         className={classnames(styles["svg"], styles["pivot-down-svg"])}
-      ></PivotSVG> */}
+      ></PivotSVG>
     </div>
   );
 }
