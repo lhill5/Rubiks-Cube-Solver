@@ -3,15 +3,10 @@ import { useThree, useFrame } from "@react-three/fiber";
 import { useGesture } from "react-use-gesture";
 import { useSpring, animated } from "@react-spring/three";
 
+import { isEmptyObject } from "../utils/helper";
 import styles from "../styles/RubiksCube.module.css";
 import Cube from "./Cube";
 import Side from "./Side";
-
-function isEmptyObject(obj) {
-  if (obj === undefined || obj === null) return true;
-
-  return Object.keys(obj).length === 0;
-}
 
 function RubiksCube(props) {
   const { size, viewport } = useThree();
@@ -102,7 +97,7 @@ function RubiksCube(props) {
   }, [props.pivotDown]);
 
   // -----------------------------------------------
-  // adds off cubes on active side to the same group
+  // adds 9 cubes on active side to the same group
   // Can then rotate entire face (F/B/L/R/U/D)
   // -----------------------------------------------
   useEffect(() => {

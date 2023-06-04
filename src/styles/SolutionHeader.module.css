@@ -1,13 +1,11 @@
 .scroll-header {
-  height: 3rem;
-
-  display: flex;
-  flex-direction: row;
+  /* height: 3rem; */
   position: absolute;
   z-index: 1;
 
+  display: flex;
+  justify-content: space-around;
   align-items: center;
-  border: 1px red solid;
 }
 
 .svg-header {
@@ -74,7 +72,7 @@
 }
 
 .highlight_move {
-  border: 5px purple solid !important;
+  border: 1px white solid;
 }
 
 .scroll-icon {

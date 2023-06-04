@@ -1,7 +1,12 @@
 import React, { useState, useRef, useEffect, useCallback } from "react";
 import { useFrame, Canvas } from "@react-three/fiber";
 import { PerspectiveCamera } from "@react-three/drei";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  Navigate,
+} from "react-router-dom";
 
 import ScramblePage from "./pages/ScramblePage";
 import CustomizePage from "./pages/CustomizePage";
@@ -54,7 +59,7 @@ function App() {
   const [pauseMode, setPauseMode] = useState(false);
 
   const updateRotation = (move) => {
-    setCurrentMove(move);
+    if (move.rotations !== 0) setCurrentMove(move);
   };
 
   const resetRotation = useCallback(() => {
@@ -377,6 +382,7 @@ function App() {
                   />
                 }
               />
+              <Route path="*" element={<Navigate to="/Scramble" replace />} />
             </Routes>
           </div>
         </div>

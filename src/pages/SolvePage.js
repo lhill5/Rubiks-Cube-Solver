@@ -21,28 +21,30 @@ export default function SolvePage(props) {
           Solve
         </button>
       </div>
-      <div className={classnames(styles["row"], styles["icon-header"])}>
-        <FastForwardIcon
-          className={classnames(styles["flip"], styles["control-icon"])}
-          onClick={props.goBackMove}
-        ></FastForwardIcon>
+      <div className={styles["row"]}>
+        <div className={styles["icon-header"]}>
+          <FastForwardIcon
+            className={classnames(styles["flip"], styles["control-icon"])}
+            onClick={props.goBackMove}
+          ></FastForwardIcon>
 
-        {props.pauseMode ? (
-          <PlayButtonIcon
-            className={styles["control-icon"]}
-            onClick={() => props.setPauseMode(!props.pauseMode)}
-          />
-        ) : (
-          <PauseButtonIcon
-            className={styles["control-icon"]}
-            onClick={() => props.setPauseMode(!props.pauseMode)}
-          />
-        )}
+          {props.pauseMode ? (
+            <PlayButtonIcon
+              className={styles["control-icon"]}
+              onClick={() => props.setPauseMode(!props.pauseMode)}
+            />
+          ) : (
+            <PauseButtonIcon
+              className={styles["control-icon"]}
+              onClick={() => props.setPauseMode(!props.pauseMode)}
+            />
+          )}
 
-        <FastForwardIcon
-          className={styles["control-icon"]}
-          onClick={props.goForwardMove}
-        />
+          <FastForwardIcon
+            className={styles["control-icon"]}
+            onClick={props.goForwardMove}
+          />
+        </div>
       </div>
     </div>
   );

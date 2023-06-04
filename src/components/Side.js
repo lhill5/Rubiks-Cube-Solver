@@ -175,8 +175,6 @@ const Side = (props) => {
       // make sure there's rotations in queue for side
       // and that we're not already animating
       if (props.currentMove.rotations !== 0 && props.isAnimationDone) {
-        // assigns cubes to current side by ref before rotation
-        // assignCubesToSide(props.side);
         // prevents multiple animations from happening at the same time
         props.setAnimationDone(false);
 
@@ -184,7 +182,7 @@ const Side = (props) => {
         let prime = props.currentMove.prime;
         rotateSide(num_rotations, prime);
       }
-    }, 50);
+    }, 250);
 
     if (props.currentMove.rotations > 0) {
       handleDebouncedClick();

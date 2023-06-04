@@ -5,7 +5,7 @@ import classnames from "classnames";
 import styles from "../styles/SolutionHeader.module.css";
 import { ReactComponent as ArrowIcon } from "../images/arrow.svg";
 
-const getColorClass = (move, index, current_index) => {
+const getColorClass = (move, index, current_index, solution) => {
   return classnames({
     [styles.F_move]: move === "F",
     [styles.B_move]: move === "B",
@@ -13,7 +13,7 @@ const getColorClass = (move, index, current_index) => {
     [styles.R_move]: move === "R",
     [styles.U_move]: move === "U",
     [styles.D_move]: move === "D",
-    [styles.highlight_move]: index === current_index,
+    [styles.highlight_move]: index === current_index && solution.length !== 0,
   });
 };
 
@@ -30,7 +30,7 @@ export default function SolutionHeader(props) {
 
   return (
     <div className={styles["scroll-header"]}>
-      <ArrowIcon className={styles["scroll-icon"]} onClick={handleScrollLeft}>
+      {/* <ArrowIcon className={styles["scroll-icon"]} onClick={handleScrollLeft}>
         Left
       </ArrowIcon>
       <div
@@ -41,7 +41,8 @@ export default function SolutionHeader(props) {
           const color_class = getColorClass(
             move[0],
             index,
-            props.solutionCounter
+            props.solutionCounter,
+            props.rubiksCubeSolution
           );
 
           return (
@@ -56,7 +57,7 @@ export default function SolutionHeader(props) {
         onClick={handleScrollRight}
       >
         Right
-      </ArrowIcon>
+      </ArrowIcon> */}
     </div>
   );
 }

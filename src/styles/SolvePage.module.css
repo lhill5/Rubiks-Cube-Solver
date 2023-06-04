@@ -3,7 +3,6 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
 }
 
 .button-cls button {
@@ -15,6 +14,9 @@
   color: #212121;
   font-size: 1.2em;
   text-align: center;
+
+  margin: 0;
+  padding: 0;
 }
 
 .row {
@@ -22,14 +24,27 @@
   flex-direction: row;
   justify-content: space-around;
   align-items: center;
+  position: relative;
 
   width: 15rem;
+  /* margin-top: 1.5rem; */
 
-  margin-top: 1.5rem;
+  position: absolute;
+  margin-top: calc(2.5rem + 25px);
 }
 
 .flip {
   transform: scaleX(-1);
+}
+
+.icon-header {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
 }
 
 .control-icon {
