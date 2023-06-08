@@ -36,7 +36,8 @@ function RubiksCube(props) {
     D: downGroup,
   };
 
-  const [isAnimationDone, setAnimationDone] = useState(true); // no animation running initially
+  // used to signal when animation is happening
+  const [isAnimationDone, setAnimationDone] = useState(true);
   const [xPos, yPos] = [useRef(x_offset), useRef(y_offset)];
 
   const [cubeSpring, setCube] = useSpring(() => ({
@@ -123,7 +124,8 @@ function RubiksCube(props) {
   useEffect(() => {
     if (isMounted.current) {
       if (cubesUpdated === 9) {
-        props.setPopQueue(true);
+        props.updateMoveDone(true);
+        // props.setPopQueue(true);
         setCubesUpdated(0);
       }
     }

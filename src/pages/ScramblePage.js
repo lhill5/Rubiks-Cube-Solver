@@ -9,7 +9,7 @@ export default function ScramblePage(props) {
   return (
     <div className={styles["center"]}>
       <RotationControls
-        updateRotation={props.updateRotation}
+        addToQueueHandler={props.addToQueueHandler}
       ></RotationControls>
       <div className={styles["btn-header"]}>
         <button onClick={props.scramble}>Scramble</button>

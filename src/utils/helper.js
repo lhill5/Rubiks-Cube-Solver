@@ -35,3 +35,16 @@ export const combineMoves = (move, current_move) => {
   }
   return move;
 };
+
+export const getQueueLength = (queue) => {
+  let length = 0;
+
+  for (let key in queue) {
+    if (queue.hasOwnProperty(key)) {
+      const move = queue[key];
+      length += move.rotations;
+    }
+  }
+
+  return length;
+};

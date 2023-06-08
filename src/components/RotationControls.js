@@ -3,7 +3,7 @@ import debounce from "lodash.debounce";
 import styles from "../styles/RotationControls.module.css";
 import { combineMoves, isEmptyObject } from "../utils/helper";
 
-export default function RotationControls({ updateRotation }) {
+export default function RotationControls(props) {
   const [prevMove, setPrevMove] = useState({});
   const [combinedMove, setCombinedMove] = useState({});
 
@@ -19,7 +19,7 @@ export default function RotationControls({ updateRotation }) {
     if (isEmptyObject(combinedMove)) return;
 
     const handleDebouncedClick = debounce(() => {
-      updateRotation(combinedMove);
+      props.addToQueueHandler(combinedMove);
       setPrevMove({});
     }, 200);
 

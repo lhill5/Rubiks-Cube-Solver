@@ -20,7 +20,7 @@ import SolutionHeader from "./components/SolutionHeader";
 import Header from "./components/Header";
 import styles from "./styles/App.module.css";
 
-import { convertStrMoveToObj, equalObjs } from "./utils/helper";
+import { convertStrMoveToObj, equalObjs, getQueueLength } from "./utils/helper";
 import {
   convertCoordToSquareNotations,
   hasBlankSquare,
@@ -28,19 +28,24 @@ import {
 import { solveRubiksCube } from "./utils/rubiksCubeSolver";
 
 function App() {
-  const isMounted = useRef(false);
-
   const [page, setPage] = useState("Scramble");
   const [rubiksCubeState, setRubiksCubeState] = useState({});
   const [rubiksCubeSolution, setRubiksCubeSolution] = useState("");
 
   // used to keep track of which move of the solution we're on
+  const [currentMove, setCurrentMove] = useState({});
   const [solutionCounter, setSolutionCounter] = useState(0);
 
-  const [currentMove, setCurrentMove] = useState({});
+  // defines queue & states to trigger queue removal
   const [movesQueue, setMovesQueue] = useState([]);
   const [popQueue, setPopQueue] = useState(false);
   const [manualMove, setManualMove] = useState(false);
+  const [queueLength, setQueueLength] = useState(0);
+
+  // defines if move is done (animation done + cube colors/position updated)
+  const [isMoveDone, updateMoveDone] = useState(false);
+  // represents number of moves that have yet to be "completed" (i.e. done animating and updating cubes)
+  const [isFirstMove, setFirstMove] = useState(true);
 
   // sets cube colors blank to simplify user input
   const [clearCube, toggleClearCube] = useState(false);
@@ -100,6 +105,7 @@ function App() {
             { side: move.side, rotations: move.rotations, prime: prime },
           ];
         }
+
         resolve(newQueue);
         return newQueue;
       });
@@ -186,6 +192,7 @@ function App() {
       });
   };
 
+  // used in solution page to skip to the prev solution's move
   const goBackMove = () => {
     if (solutionCounter === 0) return;
 
@@ -207,6 +214,7 @@ function App() {
     setSolutionCounter(solutionCounter - 1);
   };
 
+  // used in solution page to skip to the next solution's move
   const goForwardMove = () => {
     let solution = rubiksCubeSolution.split(" ");
 
@@ -229,8 +237,16 @@ function App() {
     setSolutionCounter(solutionCounter + 1);
   };
 
+  const addToQueueHandler = (move) => {
+    enqueueItem(move);
+    if (isFirstMove) {
+      setFirstMove(false);
+      setPopQueue(true);
+    }
+  };
+
+  // handles getting next move & starting animation
   useEffect(() => {
-    if (!isMounted.current) return;
     if (pauseMode && !manualMove) {
       setPopQueue(false);
       return;
@@ -254,10 +270,7 @@ function App() {
     }
   }, [popQueue, pauseMode, manualMove]);
 
-  useEffect(() => {
-    isMounted.current = true;
-  });
-
+  // handles new rubik's cube solutions
   useEffect(() => {
     if (rubiksCubeSolution) {
       const solution_array = rubiksCubeSolution.split(" ");
@@ -274,17 +287,12 @@ function App() {
   }, [rubiksCubeSolution]);
 
   useEffect(() => {
-    console.log(movesQueue);
-  }, [movesQueue.length]);
-
-  useEffect(() => {
     function handleClick(event) {
-      // Check if the clicked element is not a button
+      // Check if the clicked element is not a button or on canvas (rubik's cube)
       if (
         event.target.tagName !== "BUTTON" &&
         event.target.tagName !== "CANVAS"
       ) {
-        // Call your function here
         setActiveColor("");
       }
     }
@@ -296,11 +304,17 @@ function App() {
     return () => {
       document.body.removeEventListener("click", handleClick);
     };
-  }, []); // Make sure to include an empty dependency array to run the effect only once on mount
+  }, []);
 
+  // triggers next move from queue to be played
   useEffect(() => {
-    console.log(pauseMode);
-  }, [pauseMode]);
+    if (isMoveDone) {
+      setPopQueue(true);
+      updateMoveDone(false);
+
+      if (movesQueue.length === 0) setFirstMove(true);
+    }
+  }, [isMoveDone]);
 
   return (
     <>
@@ -339,6 +353,7 @@ function App() {
                 currentMove={currentMove}
                 resetRotation={resetRotation}
                 setCubeState={setCubeState}
+                updateMoveDone={(state) => updateMoveDone(state)}
                 setPopQueue={(state) => setPopQueue(state)}
                 activeColor={activeColor}
                 clearCube={clearCube}
@@ -355,7 +370,7 @@ function App() {
                 path="/Scramble"
                 element={
                   <ScramblePage
-                    updateRotation={updateRotation}
+                    addToQueueHandler={addToQueueHandler}
                     scramble={scramble}
                   ></ScramblePage>
                 }

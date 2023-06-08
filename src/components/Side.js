@@ -136,7 +136,7 @@ const Side = (props) => {
     setSide({
       rotation: [x, y, z],
       config: {
-        duration: 200 * num_rotations,
+        duration: 175 * num_rotations,
       },
     });
   };
