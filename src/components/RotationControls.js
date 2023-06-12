@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import debounce from "lodash.debounce";
 import styles from "../styles/RotationControls.module.css";
 import { combineMoves, isEmptyObject } from "../utils/helper";

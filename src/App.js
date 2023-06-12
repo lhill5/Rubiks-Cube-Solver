@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect, useCallback } from "react";
-import { useFrame, Canvas } from "@react-three/fiber";
+import { Canvas } from "@react-three/fiber";
 import { PerspectiveCamera } from "@react-three/drei";
 import {
   BrowserRouter as Router,
@@ -20,32 +20,40 @@ import SolutionHeader from "./components/SolutionHeader";
 import Header from "./components/Header";
 import styles from "./styles/App.module.css";
 
-import { convertStrMoveToObj, equalObjs, getQueueLength } from "./utils/helper";
+import { convertStrMoveToObj, equalObjs } from "./utils/helper";
 import {
   convertCoordToSquareNotations,
   hasBlankSquare,
 } from "./utils/rubiksCubeConverter";
 import { solveRubiksCube } from "./utils/rubiksCubeSolver";
+import { isPlainObject } from "lodash";
 
 function App() {
   const [page, setPage] = useState("Scramble");
   const [rubiksCubeState, setRubiksCubeState] = useState({});
-  const [rubiksCubeSolution, setRubiksCubeSolution] = useState("");
+  const [rubiksCubeSolution, setRubiksCubeSolution] = useState([]);
 
   // used to keep track of which move of the solution we're on
   const [currentMove, setCurrentMove] = useState({});
   const [solutionCounter, setSolutionCounter] = useState(0);
+  // keeps track of which step we're at in solution on horizontal scrollbar
+  const [scrollState, setScrollState] = useState({ counter: 0, direction: "" });
 
   // defines queue & states to trigger queue removal
   const [movesQueue, setMovesQueue] = useState([]);
   const [popQueue, setPopQueue] = useState(false);
   const [manualMove, setManualMove] = useState(false);
-  const [queueLength, setQueueLength] = useState(0);
 
   // defines if move is done (animation done + cube colors/position updated)
   const [isMoveDone, updateMoveDone] = useState(false);
   // represents number of moves that have yet to be "completed" (i.e. done animating and updating cubes)
   const [isFirstMove, setFirstMove] = useState(true);
+  const [isFirstSolveMove, setFirstSolveMove] = useState(true);
+
+  // handles solve page when multiple clicks are made simultaneously
+  const [solveQueue, setSolveQueue] = useState([]);
+  // differentiates scramble moves from solve moves in movesQueue
+  const [solveType, setSolveType] = useState("");
 
   // sets cube colors blank to simplify user input
   const [clearCube, toggleClearCube] = useState(false);
@@ -64,7 +72,12 @@ function App() {
   const [pauseMode, setPauseMode] = useState(false);
 
   const updateRotation = (move) => {
-    if (move.rotations !== 0) setCurrentMove(move);
+    updateMoveDone(false);
+
+    if (move.rotations !== 0) {
+      updateMoveDone(false);
+      setCurrentMove(move);
+    }
   };
 
   const resetRotation = useCallback(() => {
@@ -112,16 +125,20 @@ function App() {
     });
   }, []);
 
-  const enqueueItemLeft = useCallback((move) => {
-    // adds item to beginning of queue (highest priority)
-    // doesn't account for 2nd move being a duplicate of 1st move
+  const enqueueSolveItem = useCallback((move) => {
+    // adds item to solve queue (basic add to list method,
+    // doesn't check for duplicate moves that enqueueItems does
 
     return new Promise((resolve) => {
-      setMovesQueue((prevQueue) => {
+      setSolveQueue((prevQueue) => {
         let newQueue;
         newQueue = [
           ...prevQueue,
-          { side: move.side, rotations: move.rotations, prime: move.prime },
+          {
+            side: move.side,
+            rotations: parseInt(move.rotations),
+            prime: move.prime,
+          },
         ];
 
         resolve(newQueue);
@@ -145,6 +162,21 @@ function App() {
     });
   }, []);
 
+  const dequeueSolveItem = useCallback(() => {
+    return new Promise((resolve, reject) => {
+      setSolveQueue((prevQueue) => {
+        if (prevQueue.length === 0) {
+          reject("Queue is empty");
+          return prevQueue;
+        }
+
+        const [removedItem, ...newQueue] = prevQueue;
+        resolve(removedItem);
+        return newQueue;
+      });
+    });
+  }, []);
+
   const setCubeState = (position, cube_colors) => {
     let square_notations = convertCoordToSquareNotations(position, cube_colors);
     setRubiksCubeState((prevRubiksCubeState) => {
@@ -153,6 +185,7 @@ function App() {
   };
 
   const scramble = useCallback(async () => {
+    setSolveType("scramble");
     setPopQueue(true);
     const sides = ["F", "B", "L", "R", "U", "D"];
     for (let i = 0; i < 20; i++) {
@@ -184,57 +217,14 @@ function App() {
 
     solveRubiksCube(formattedRCSolution)
       .then((data) => {
-        setRubiksCubeSolution(data.solution);
+        let solution = data.solution;
+        let solution_array = solution.split(" ").filter((s) => s.trim() != "");
+        setRubiksCubeSolution(solution_array);
         setSolutionCounter(0);
       })
       .catch((error) => {
         alert(error.message);
       });
-  };
-
-  // used in solution page to skip to the prev solution's move
-  const goBackMove = () => {
-    if (solutionCounter === 0) return;
-
-    // get previous move & convert to move obj
-    let prev_move_str = rubiksCubeSolution.split(" ")[solutionCounter - 1];
-    let side = prev_move_str[0];
-    let rotations = prev_move_str[prev_move_str.length - 1];
-    let prime = prev_move_str.includes("'");
-    let prev_move = { side: side, rotations: rotations, prime: prime };
-
-    // do opposite of previous move (prime = !prime)
-    prev_move.prime = !prev_move.prime;
-
-    // add previous move to beginning of movesQueue & run
-    enqueueItemLeft(prev_move);
-    setManualMove(true);
-
-    // move back 1 move in solution
-    setSolutionCounter(solutionCounter - 1);
-  };
-
-  // used in solution page to skip to the next solution's move
-  const goForwardMove = () => {
-    let solution = rubiksCubeSolution.split(" ");
-
-    // cannot go forward if at end of solution
-    if (solutionCounter >= solution.length) return;
-
-    // get next solution move
-    let nxt_solution_move = convertStrMoveToObj(solution[solutionCounter]);
-
-    // if already solved cube or current move doesn't match solution's next move (check if this can ever happen and condition1 be false)
-    if (
-      movesQueue.length === 0 ||
-      !equalObjs(movesQueue[0], nxt_solution_move)
-    ) {
-      // add to queue (priority 1)
-      enqueueItemLeft(nxt_solution_move);
-    }
-
-    setManualMove(true);
-    setSolutionCounter(solutionCounter + 1);
   };
 
   const addToQueueHandler = (move) => {
@@ -245,36 +235,73 @@ function App() {
     }
   };
 
-  // handles getting next move & starting animation
-  useEffect(() => {
-    if (pauseMode && !manualMove) {
-      setPopQueue(false);
-      return;
-    }
+  // used in solution page to skip to the prev solution's move
+  const goBackMove = () => {
+    if (solutionCounter === 0) return;
 
-    // if automatic move (popQueue) or in pause mode
-    // and user manually clicked forward/backward then move
-    if (popQueue || manualMove) {
-      if (movesQueue.length !== 0) {
-        try {
-          dequeueItem()
-            .then((move) => {
-              updateRotation(move);
-              if (!manualMove) setSolutionCounter(solutionCounter + 1);
-            })
-            .catch((error) => console.error(error));
-        } catch (error) {}
-      }
-      setPopQueue(false);
-      setManualMove(false);
+    // get previous move & convert to move obj
+    let prev_move_str = rubiksCubeSolution[solutionCounter - 1];
+    let side = prev_move_str[0];
+    let rotations = prev_move_str[prev_move_str.length - 1];
+    let prime = prev_move_str.includes("'");
+    let prev_move = { side: side, rotations: rotations, prime: prime };
+
+    // do opposite of previous move (prime = !prime)
+    prev_move.prime = !prev_move.prime;
+
+    // add move to solve queue (handles multiple button clicks through the use of a queue)
+    enqueueSolveItem(prev_move);
+    // move back 1 move in solution
+    setSolutionCounter(solutionCounter - 1);
+    setSolveType("backward");
+
+    // keep track of where we are on horizontal solution pane
+    setScrollState({
+      counter: scrollState.counter - 1 < 0 ? 0 : scrollState.counter - 1,
+      direction: "backward",
+    });
+
+    if (isFirstSolveMove) {
+      setFirstSolveMove(false);
+      setManualMove(true);
     }
-  }, [popQueue, pauseMode, manualMove]);
+  };
+
+  // used in solution page to skip to the next solution's move
+  const goForwardMove = () => {
+    // cannot go forward if at end of solution
+    if (solutionCounter >= rubiksCubeSolution.length) return;
+
+    // get next solution move
+    let nxt_solution_move = convertStrMoveToObj(
+      rubiksCubeSolution[solutionCounter]
+    );
+
+    // add to queue (priority 1)
+    enqueueSolveItem(nxt_solution_move);
+    // move forward 1 move in solution
+    setSolutionCounter(solutionCounter + 1);
+    setSolveType("forward");
+
+    // keep track of where we are on horizontal solution pane
+    setScrollState({
+      counter:
+        scrollState.counter + 1 > rubiksCubeSolution.length
+          ? 0
+          : scrollState.counter + 1,
+      direction: "forward",
+    });
+
+    if (isFirstSolveMove) {
+      setFirstSolveMove(false);
+      setManualMove(true);
+    }
+  };
 
   // handles new rubik's cube solutions
   useEffect(() => {
-    if (rubiksCubeSolution) {
-      const solution_array = rubiksCubeSolution.split(" ");
-      for (let move of solution_array) {
+    if (!equalObjs(rubiksCubeSolution, [])) {
+      for (let move of rubiksCubeSolution) {
         const [side, num_rotations] = move.split("");
         enqueueItem({
           side: side,
@@ -282,10 +309,12 @@ function App() {
           prime: false,
         });
       }
+      setSolveType("solve");
       setPopQueue(true);
     }
   }, [rubiksCubeSolution]);
 
+  // deselects color picked if you click on the same color again or outside of the canvas (rubik's cube)
   useEffect(() => {
     function handleClick(event) {
       // Check if the clicked element is not a button or on canvas (rubik's cube)
@@ -306,13 +335,77 @@ function App() {
     };
   }, []);
 
+  // handles getting next move & starting animation
+  useEffect(() => {
+    if (pauseMode && !manualMove) {
+      setPopQueue(false);
+      return;
+    }
+
+    // if automatic move (popQueue) or in pause mode
+    // and user manually clicked forward/backward then move
+    if (popQueue || manualMove) {
+      if (popQueue && movesQueue.length !== 0) {
+        try {
+          dequeueItem()
+            .then((move) => {
+              updateRotation(move);
+              if (!manualMove && solveType === "solve") {
+                setSolutionCounter(solutionCounter + 1);
+                setScrollState({
+                  counter: scrollState.counter + 1,
+                  direction: "forward",
+                });
+              }
+            })
+            .catch((error) => console.error(error));
+        } catch (error) {}
+      } else if (manualMove && solveQueue.length !== 0) {
+        try {
+          dequeueSolveItem()
+            .then((move) => {
+              updateRotation(move);
+            })
+            .catch((error) => console.error(error));
+        } catch (error) {}
+      }
+
+      setPopQueue(false);
+      setManualMove(false);
+    }
+  }, [popQueue, pauseMode, manualMove, solveType]);
+
   // triggers next move from queue to be played
   useEffect(() => {
     if (isMoveDone) {
-      setPopQueue(true);
-      updateMoveDone(false);
+      // if we played out solution on solve page, don't make another move, isMoveDone remains true
+      if (solutionCounter > rubiksCubeSolution.length) {
+        setFirstMove(true);
+        return;
+      }
 
-      if (movesQueue.length === 0) setFirstMove(true);
+      if (movesQueue.length !== 0) {
+        setPopQueue(true);
+      } else {
+        setFirstMove(true);
+      }
+    }
+  }, [isMoveDone]);
+
+  // triggers next move from queue to be played
+  useEffect(() => {
+    if (isMoveDone) {
+      // if we played out solution on solve page, don't make another move, isMoveDone remains true
+      if (solutionCounter > rubiksCubeSolution.length) {
+        setFirstSolveMove(true);
+        return;
+      }
+
+      if (solveQueue.length !== 0) {
+        setManualMove(true);
+      } else {
+        setFirstSolveMove(true);
+      }
     }
   }, [isMoveDone]);
 
@@ -342,6 +435,8 @@ function App() {
               <SolutionHeader
                 rubiksCubeSolution={rubiksCubeSolution}
                 solutionCounter={solutionCounter}
+                scrollState={scrollState}
+                setScrollState={setScrollState}
               ></SolutionHeader>
             ) : null}
 
@@ -354,7 +449,6 @@ function App() {
                 resetRotation={resetRotation}
                 setCubeState={setCubeState}
                 updateMoveDone={(state) => updateMoveDone(state)}
-                setPopQueue={(state) => setPopQueue(state)}
                 activeColor={activeColor}
                 clearCube={clearCube}
                 fillCube={fillCube}

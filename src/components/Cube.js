@@ -1,4 +1,4 @@
-import React, { useRef, forwardRef, useState, useEffect, useMemo } from "react";
+import React, { useRef, useState, useEffect } from "react";
 // import { animated } from "@react-spring/three";
 // import { Vector3 } from "three";
 import { Box } from "@react-three/drei";

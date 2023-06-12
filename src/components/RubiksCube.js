@@ -1,10 +1,9 @@
-import React, { useRef, useState, useEffect, useCallback } from "react";
-import { useThree, useFrame } from "@react-three/fiber";
+import React, { useRef, useState, useEffect } from "react";
+import { useThree } from "@react-three/fiber";
 import { useGesture } from "react-use-gesture";
 import { useSpring, animated } from "@react-spring/three";
 
 import { isEmptyObject } from "../utils/helper";
-import styles from "../styles/RubiksCube.module.css";
 import Cube from "./Cube";
 import Side from "./Side";
 
@@ -125,7 +124,6 @@ function RubiksCube(props) {
     if (isMounted.current) {
       if (cubesUpdated === 9) {
         props.updateMoveDone(true);
-        // props.setPopQueue(true);
         setCubesUpdated(0);
       }
     }

@@ -2,7 +2,7 @@ import axios from "axios";
 
 export const solveRubiksCube = async (cubeState) => {
   const cubeStateJSON = JSON.stringify(cubeState);
-  console.log("here");
+
   // Make an axios POST request with the JSON string as a parameter
   return axios
     .post("http://localhost:8000/rubiks-solution/", { data: cubeStateJSON })

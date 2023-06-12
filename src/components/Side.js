@@ -1,5 +1,4 @@
-import React, { useRef, useState, useEffect, useCallback } from "react";
-import { Canvas, useThree, useFrame } from "@react-three/fiber";
+import React, { useEffect } from "react";
 import { useSpring, animated } from "@react-spring/three";
 import debounce from "lodash.debounce";
 

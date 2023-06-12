@@ -1,6 +1,5 @@
 import React from "react";
-import { useRef, useState, useEffect, useCallback } from "react";
-import { useSpring, animated } from "@react-spring/web";
+import { useRef, useEffect } from "react";
 import classnames from "classnames";
 import styles from "../styles/SolutionHeader.module.css";
 import { ReactComponent as ArrowIcon } from "../images/arrow.svg";
@@ -28,6 +27,24 @@ export default function SolutionHeader(props) {
     scrollRef.current.scrollBy({ left: 300, behavior: "smooth" });
   };
 
+  useEffect(() => {
+    console.log(props.scrollState.counter);
+    console.log(props.scrollState.direction);
+
+    if (props.scrollState) {
+      if (
+        props.scrollState.counter !== 0 &&
+        props.scrollState.counter % 6 === 0
+      ) {
+        if (props.scrollState.direction === "backward") {
+          handleScrollLeft();
+        } else if (props.scrollState.direction === "forward") {
+          handleScrollRight();
+        }
+      }
+    }
+  }, [props.scrollState]);
+
   return (
     <div className={styles["scroll-header"]}>
       {props.rubiksCubeSolution.length !== 0 ? (
@@ -40,11 +57,11 @@ export default function SolutionHeader(props) {
         ref={scrollRef}
         className={classnames(styles["svg-header"], styles["snaps-inline"])}
       >
-        {props.rubiksCubeSolution.split(" ").map((move, index) => {
+        {props.rubiksCubeSolution.map((move, index) => {
           const color_class = getColorClass(
             move[0],
             index,
-            props.solutionCounter,
+            props.solutionCounter - 1,
             props.rubiksCubeSolution
           );
 
