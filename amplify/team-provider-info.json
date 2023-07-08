@@ -1,0 +1,23 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-rubikscubefrontend-dev-104624-authRole",
+      "UnauthRoleArn": "arn:aws:iam::027273802015:role/amplify-rubikscubefrontend-dev-104624-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::027273802015:role/amplify-rubikscubefrontend-dev-104624-authRole",
+      "Region": "us-east-1",
+      "DeploymentBucketName": "amplify-rubikscubefrontend-dev-104624-deployment",
+      "UnauthRoleName": "amplify-rubikscubefrontend-dev-104624-unauthRole",
+      "StackName": "amplify-rubikscubefrontend-dev-104624",
+      "StackId": "arn:aws:cloudformation:us-east-1:027273802015:stack/amplify-rubikscubefrontend-dev-104624/375c2cd0-1d9e-11ee-a842-0e9b43f4162b",
+      "AmplifyAppId": "dowx29c1srj3"
+    },
+    "categories": {
+      "hosting": {
+        "amplifyhosting": {
+          "appId": "dowx29c1srj3",
+          "type": "manual"
+        }
+      }
+    }
+  }
+}

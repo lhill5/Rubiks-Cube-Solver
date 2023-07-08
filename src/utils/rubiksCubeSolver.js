@@ -5,7 +5,10 @@ export const solveRubiksCube = async (cubeState) => {
 
   // Make an axios POST request with the JSON string as a parameter
   return axios
-    .post("http://localhost:8000/rubiks-solution/", { data: cubeStateJSON })
+    .post(
+      "https://2wzb93z1ya.execute-api.us-east-1.amazonaws.com/prod/rubiks-solution/",
+      cubeStateJSON
+    )
     .then((response) => {
       let response_str = response.data.solution;
       if (response_str.indexOf("Error") !== -1) {

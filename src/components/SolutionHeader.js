@@ -28,9 +28,6 @@ export default function SolutionHeader(props) {
   };
 
   useEffect(() => {
-    console.log(props.scrollState.counter);
-    console.log(props.scrollState.direction);
-
     if (props.scrollState) {
       if (
         props.scrollState.counter !== 0 &&
