@@ -27,3 +27,10 @@ export const solveRubiksCube = async (cubeState) => {
       throw error;
     });
 };
+
+export const isSolved = (cubeState) => {
+  for (let square in cubeState) {
+    if (cubeState[square] != square[0]) return false;
+  }
+  return true;
+};

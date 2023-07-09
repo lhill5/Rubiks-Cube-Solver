@@ -1,3 +1,43 @@
+@media (min-width: 320px) {
+  .section:hover::after {
+    width: 3rem;
+  }
+
+  .header-text {
+    width: 16rem;
+  }
+}
+
+@media (min-width: 380px) {
+  .section:hover::after {
+    width: 4.5rem;
+  }
+
+  .header-text {
+    width: 16rem;
+  }
+}
+
+@media (min-width: 481px) {
+  .section:hover::after {
+    width: 5rem;
+  }
+
+  .header-text {
+    width: 24rem;
+  }
+}
+
+@media (min-width: 641px) {
+  .section:hover::after {
+    width: 4.5rem;
+  }
+
+  .header-text {
+    width: 35rem;
+  }
+}
+
 .header {
   width: 100vw;
   height: 5rem;
@@ -16,21 +56,6 @@
   justify-content: space-around;
   margin: 0;
   padding: 0;
-
-  /* border: 1px red solid; */
-
-  @media (min-width: 320px) {
-    /* smartphones, iPhone, portrait 480x320 phones */
-    width: 16rem;
-  }
-  @media (min-width: 481px) {
-    /* portrait e-readers (Nook/Kindle), smaller tablets @ 600 or @ 640 wide. */
-    width: 24rem;
-  }
-  @media (min-width: 641px) {
-    /* portrait tablets, portrait iPad, landscape e-readers, landscape 800x480 or 854x480 phones */
-    width: 35rem;
-  }
 }
 
 .section {
@@ -62,7 +87,6 @@
 .section:hover::after {
   content: "";
   height: 2px;
-  width: 50%;
   background-color: #e4edf1;
   display: block;
 }

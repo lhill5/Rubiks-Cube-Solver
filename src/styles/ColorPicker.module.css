@@ -7,10 +7,12 @@
   @media (min-width: 320px) {
     /* smartphones, iPhone, portrait 480x320 phones */
     width: 20rem;
+    margin-bottom: 1.5rem;
   }
   @media (min-width: 481px) {
     /* portrait e-readers (Nook/Kindle), smaller tablets @ 600 or @ 640 wide. */
     width: 32.5rem;
+    margin-bottom: 0;
   }
 }
 

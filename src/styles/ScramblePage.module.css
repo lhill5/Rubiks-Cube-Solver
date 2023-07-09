@@ -11,6 +11,14 @@
   flex-direction: row;
   justify-content: space-around;
   width: 24rem;
+
+  @media (min-width: 320px) {
+    margin-bottom: 1.5rem;
+  }
+
+  @media (min-width: 481px) {
+    margin-bottom: 0px;
+  }
 }
 
 .btn-header button {
@@ -25,7 +33,6 @@
   text-align: center;
 
   @media (min-width: 320px) {
-    /* smartphones, iPhone, portrait 480x320 phones */
     width: 6.75rem;
     height: 2.25rem;
   }

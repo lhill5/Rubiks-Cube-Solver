@@ -25,10 +25,12 @@ import {
   convertCoordToSquareNotations,
   hasBlankSquare,
 } from "./utils/rubiksCubeConverter";
-import { solveRubiksCube } from "./utils/rubiksCubeSolver";
+import { solveRubiksCube, isSolved } from "./utils/rubiksCubeSolver";
 
 function App() {
   const [page, setPage] = useState("Scramble");
+  // determines if user can navigate to other pages
+  const [navAllowed, setNavAllowed] = useState(true);
   const [rubiksCubeState, setRubiksCubeState] = useState({});
   const [rubiksCubeSolution, setRubiksCubeSolution] = useState([]);
 
@@ -195,10 +197,16 @@ function App() {
   }, [enqueueItem]);
 
   const solve = () => {
-    if (hasBlankSquare(rubiksCubeState)) {
+    // prevents call to api if cube in animation state or in incomplete/solved state.
+    if (!isMoveDone || movesQueue.length !== 0 || solveQueue.length !== 0) {
+      return;
+    } else if (hasBlankSquare(rubiksCubeState)) {
       alert(
         "Rubik's cube provided is invalid. At least 1 square is uncolored, make sure all squares are colored."
       );
+      return;
+    } else if (isSolved(rubiksCubeState)) {
+      alert("Rubik's cube is already in a solved state.");
       return;
     }
 
@@ -408,10 +416,18 @@ function App() {
     }
   }, [isMoveDone]);
 
+  // keeps track of whether cube has any blank (uncolored) squares in current state
+  useEffect(() => {
+    const has_blank_squares = Object.values(rubiksCubeState).some(
+      (value) => value === undefined
+    );
+    setNavAllowed(!has_blank_squares);
+  }, [rubiksCubeState]);
+
   return (
     <>
       <Router>
-        <Header setPage={setPage} />
+        <Header curPage={page} setPage={setPage} navAllowed={navAllowed} />
         <div className={styles["background"]}>
           <div className={styles["rubiks-cube"]}>
             {page === "Customize" ? (
