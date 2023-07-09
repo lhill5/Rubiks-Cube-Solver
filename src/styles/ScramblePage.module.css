@@ -17,11 +17,21 @@
   position: absolute;
   margin-top: 25px;
   border: none;
-  width: 7.5rem;
-  height: 2.5rem;
+
   border-radius: 1.5rem;
   background: #e4edf1;
   color: #212121;
   font-size: 1.2em;
   text-align: center;
+
+  @media (min-width: 320px) {
+    /* smartphones, iPhone, portrait 480x320 phones */
+    width: 6.75rem;
+    height: 2.25rem;
+  }
+
+  @media (min-width: 481px) {
+    width: 7.5rem;
+    height: 2.5rem;
+  }
 }

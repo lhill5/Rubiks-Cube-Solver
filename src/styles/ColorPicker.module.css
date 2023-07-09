@@ -1,15 +1,20 @@
 .color-picker {
-  width: 32.5rem;
   display: flex;
   justify-content: space-around;
   align-items: center;
   margin-top: 0.5rem;
+
+  @media (min-width: 320px) {
+    /* smartphones, iPhone, portrait 480x320 phones */
+    width: 20rem;
+  }
+  @media (min-width: 481px) {
+    /* portrait e-readers (Nook/Kindle), smaller tablets @ 600 or @ 640 wide. */
+    width: 32.5rem;
+  }
 }
 
 .color-picker button {
-  width: 4rem;
-  height: 2rem;
-
   background: #e4edf1;
   border-radius: 1.5rem;
   color: #212121;
@@ -19,6 +24,16 @@
 
   margin: 0;
   padding: 0;
+
+  @media (min-width: 320px) {
+    width: 2.5rem;
+    height: 1.75rem;
+  }
+
+  @media (min-width: 481px) {
+    width: 4rem;
+    height: 2rem;
+  }
 }
 
 .color-picker .white-btn {

@@ -20,11 +20,11 @@ export default function SolutionHeader(props) {
   const scrollRef = useRef(0);
 
   const handleScrollLeft = () => {
-    scrollRef.current.scrollBy({ left: -300, behavior: "smooth" });
+    scrollRef.current.scrollBy({ left: -250, behavior: "smooth" });
   };
 
   const handleScrollRight = () => {
-    scrollRef.current.scrollBy({ left: 300, behavior: "smooth" });
+    scrollRef.current.scrollBy({ left: 250, behavior: "smooth" });
   };
 
   useEffect(() => {

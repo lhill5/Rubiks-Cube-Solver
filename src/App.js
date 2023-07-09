@@ -26,7 +26,6 @@ import {
   hasBlankSquare,
 } from "./utils/rubiksCubeConverter";
 import { solveRubiksCube } from "./utils/rubiksCubeSolver";
-import { isPlainObject } from "lodash";
 
 function App() {
   const [page, setPage] = useState("Scramble");

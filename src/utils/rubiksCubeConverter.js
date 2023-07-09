@@ -1,6 +1,4 @@
 export const convertCoordToSquareNotations = (position, colors) => {
-  let { x, y, z } = position;
-
   const cube_colors = Object.fromEntries(
     Object.entries(colors).filter(([key, value]) => value !== "#212121")
   );
@@ -25,7 +23,6 @@ export const hasBlankSquare = (obj) => {
 
 const CoordToSquares = (position, colors) => {
   let sides = [];
-  let indices = [];
   let square_notations = [];
 
   sides = getCubeSides(position);

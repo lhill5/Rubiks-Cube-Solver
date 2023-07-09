@@ -12,21 +12,29 @@
 }
 
 .header-text {
-  width: 35rem;
-  /* border: 1px red solid; */
-
   display: flex;
+  justify-content: space-around;
   margin: 0;
   padding: 0;
 
-  @media (max-width: 768px) {
-    width: 22.5rem;
+  /* border: 1px red solid; */
+
+  @media (min-width: 320px) {
+    /* smartphones, iPhone, portrait 480x320 phones */
+    width: 16rem;
+  }
+  @media (min-width: 481px) {
+    /* portrait e-readers (Nook/Kindle), smaller tablets @ 600 or @ 640 wide. */
+    width: 24rem;
+  }
+  @media (min-width: 641px) {
+    /* portrait tablets, portrait iPad, landscape e-readers, landscape 800x480 or 854x480 phones */
+    width: 35rem;
   }
 }
 
 .section {
   border: none;
-  background-color: none;
   background: none;
   color: white;
   font-family: Garamond, Georgia, serif;
@@ -65,6 +73,6 @@
   top: calc(9vh / 4);
   /* height: 100%; */
 
-  width: 2.5rem;
-  height: 2.5rem;
+  width: 2.25rem;
+  height: 2.25rem;
 }
