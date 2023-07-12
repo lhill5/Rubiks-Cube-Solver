@@ -189,7 +189,7 @@ function App() {
     setSolveType("scramble");
     setPopQueue(true);
     const sides = ["F", "B", "L", "R", "U", "D"];
-    for (let i = 0; i < 20; i++) {
+    for (let i = 0; i < 10; i++) {
       const randomIndex = Math.floor(Math.random() * sides.length);
       const randomSide = sides[randomIndex];
       enqueueItem({ side: randomSide, rotations: 1, prime: false });

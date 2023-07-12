@@ -3,37 +3,17 @@
   display: flex;
   justify-content: space-around;
   align-items: center;
-
-  @media (min-width: 320px) {
-    /* smartphones, iPhone, portrait 480x320 phones */
-    width: 20rem;
-  }
-  @media (min-width: 481px) {
-    /* portrait e-readers (Nook/Kindle), smaller tablets @ 600 or @ 640 wide. */
-    width: 24rem;
-  }
 }
 
 .rotate-btns .btn-group button {
   background: #e4edf1;
   border-radius: 1.5rem;
   color: #212121;
-  font-size: 1.2em;
+  font-size: 1.1em;
   text-align: center;
   border: none;
   margin: 0;
   padding: 0;
-
-  @media (min-width: 320px) {
-    /* smartphones, iPhone, portrait 480x320 phones */
-    width: 2.5rem;
-    height: 2.25rem;
-  }
-  @media (min-width: 481px) {
-    /* portrait e-readers (Nook/Kindle), smaller tablets @ 600 or @ 640 wide. */
-    width: 3rem;
-    height: 2.5rem;
-  }
 }
 
 .rotate-btns .btn-group button:hover {
@@ -43,4 +23,27 @@
 .btn-group .front:hover {
   /* background-color: var(--front-color); */
   border: var(--border-size) var(--front-color) solid;
+}
+
+@media (min-width: 320px) {
+  /* smartphones, iPhone, portrait 480x320 phones */
+  .rotate-btns {
+    width: 20rem;
+  }
+  .rotate-btns .btn-group button {
+    width: 2.5rem;
+    height: 2.25rem;
+  }
+}
+
+@media (min-width: 481px) {
+  /* portrait e-readers (Nook/Kindle), smaller tablets @ 600 or @ 640 wide. */
+  .rotate-btns {
+    width: 24rem;
+  }
+
+  .rotate-btns .btn-group button {
+    width: 3rem;
+    height: 2.5rem;
+  }
 }

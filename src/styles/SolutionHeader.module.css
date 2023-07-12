@@ -15,16 +15,6 @@
 
   overflow-x: auto;
   overscroll-behavior-inline: contain;
-
-  @media (min-width: 320px) {
-    width: 16.5rem;
-    --_spacer: 20px;
-  }
-
-  @media (min-width: 481px) {
-    width: 30rem;
-    --_spacer: 16px;
-  }
 }
 
 .svg-header span {
@@ -37,16 +27,6 @@
   text-align: center;
   border-radius: 5px;
   color: white;
-
-  @media (min-width: 320px) {
-    width: 2.1rem;
-    height: 2.1rem;
-  }
-
-  @media (min-width: 481px) {
-    width: 2.5rem;
-    height: 2.5rem;
-  }
 }
 
 .snaps-inline {
@@ -90,16 +70,6 @@
 
 .scroll-icon {
   margin: 0 10px;
-
-  @media (min-width: 320px) {
-    width: 1.25rem;
-    height: 1.25rem;
-  }
-
-  @media (min-width: 481px) {
-    width: 2rem;
-    height: 2rem;
-  }
 }
 
 .scroll-icon:hover {
@@ -108,4 +78,38 @@
 
 .right-scroll {
   transform: scaleX(-1);
+}
+
+@media (min-width: 320px) {
+  .svg-header {
+    width: 16.5rem;
+    --_spacer: 20px;
+  }
+
+  .svg-header span {
+    width: 2.1rem;
+    height: 2.1rem;
+  }
+
+  .scroll-icon {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+}
+
+@media (min-width: 481px) {
+  .svg-header {
+    width: 30rem;
+    --_spacer: 16px;
+  }
+
+  .svg-header span {
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+
+  .scroll-icon {
+    width: 2rem;
+    height: 2rem;
+  }
 }

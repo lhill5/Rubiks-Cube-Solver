@@ -1,16 +1,13 @@
 .svg-header {
-  width: 20rem;
   position: absolute;
   z-index: 1;
   display: flex;
   justify-content: space-around;
-
-  /* border: 1px red solid; */
 }
 
 .svg {
-  width: 2.75em;
-  height: 2.75em;
+  width: 2.75rem;
+  height: 2.75rem;
 }
 
 .pivot-left-svg {
@@ -35,4 +32,46 @@
   top: 25px;
   left: 25px;
   transform: rotate(90deg) scaleX(1);
+}
+
+@media (min-width: 320px) {
+  .svg-header {
+    width: 16rem;
+  }
+
+  .svg {
+    width: 2rem;
+    height: 2rem;
+  }
+}
+
+@media (min-width: 380px) {
+  .svg-header {
+    width: 20rem;
+  }
+
+  .svg {
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+}
+
+@media (min-width: 481px) {
+  .svg-header {
+    width: 18rem;
+  }
+  .svg {
+    width: 2.75rem;
+    height: 2.75rem;
+  }
+}
+
+@media (min-width: 641px) {
+  .svg-header {
+    width: 20rem;
+  }
+  .svg {
+    width: 2.75rem;
+    height: 2.75rem;
+  }
 }

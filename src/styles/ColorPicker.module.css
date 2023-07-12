@@ -3,17 +3,6 @@
   justify-content: space-around;
   align-items: center;
   margin-top: 0.5rem;
-
-  @media (min-width: 320px) {
-    /* smartphones, iPhone, portrait 480x320 phones */
-    width: 20rem;
-    margin-bottom: 1.5rem;
-  }
-  @media (min-width: 481px) {
-    /* portrait e-readers (Nook/Kindle), smaller tablets @ 600 or @ 640 wide. */
-    width: 32.5rem;
-    margin-bottom: 0;
-  }
 }
 
 .color-picker button {
@@ -26,16 +15,6 @@
 
   margin: 0;
   padding: 0;
-
-  @media (min-width: 320px) {
-    width: 2.5rem;
-    height: 1.75rem;
-  }
-
-  @media (min-width: 481px) {
-    width: 4rem;
-    height: 2rem;
-  }
 }
 
 .color-picker .white-btn {
@@ -64,4 +43,28 @@
 
 .color-picker .yellow-btn {
   background-color: var(--down-color);
+}
+
+@media (min-width: 320px) {
+  .color-picker {
+    width: 20rem;
+    margin-bottom: 7.5vh;
+  }
+
+  .color-picker button {
+    width: 2.5rem;
+    height: 1.75rem;
+  }
+}
+
+@media (min-width: 481px) {
+  .color-picker {
+    width: 32.5rem;
+    margin-bottom: 0;
+  }
+
+  .color-picker button {
+    width: 4rem;
+    height: 2rem;
+  }
 }

@@ -2,13 +2,6 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-
-  @media (min-width: 320px) {
-    margin-bottom: 1.5rem;
-  }
-  @media (min-width: 481px) {
-    margin-bottom: 0;
-  }
 }
 
 .button-cls button {
@@ -22,16 +15,6 @@
 
   margin: 0;
   padding: 0;
-
-  @media (min-width: 320px) {
-    width: 6.75rem;
-    height: 2.25rem;
-  }
-
-  @media (min-width: 481px) {
-    width: 7.5rem;
-    height: 2.5rem;
-  }
 }
 
 .row {
@@ -45,7 +28,7 @@
   /* margin-top: 1.5rem; */
 
   position: absolute;
-  margin-top: calc(2.5rem + 25px);
+  margin-top: calc(2rem + 25px);
 }
 
 .flip {
@@ -62,13 +45,33 @@
   width: 100%;
 }
 
-.control-icon {
-  @media (min-width: 320px) {
+@media (min-width: 320px) {
+  .solve-buttons {
+    margin-bottom: 7.5vh;
+  }
+
+  .button-cls button {
+    width: 6.75rem;
+    height: 2.25rem;
+  }
+
+  .control-icon {
     width: 1.85rem;
     height: 1.85rem;
   }
+}
 
-  @media (min-width: 481px) {
+@media (min-width: 481px) {
+  .solve-buttons {
+    margin-bottom: 0;
+  }
+
+  .button-cls button {
+    width: 7.5rem;
+    height: 2.5rem;
+  }
+
+  .control-icon {
     width: 2rem;
     height: 2rem;
   }

@@ -17,16 +17,6 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-
-  @media (min-width: 320px) {
-    /* smartphones, iPhone, portrait 480x320 phones */
-    font-size: 14px;
-  }
-
-  @media (min-width: 1025px) {
-    /* big landscape tablets, laptops, and desktops */
-    font-size: 16px;
-  }
 }
 
 code {
