@@ -30,7 +30,36 @@ export const solveRubiksCube = async (cubeState) => {
 
 export const isSolved = (cubeState) => {
   for (let square in cubeState) {
-    if (cubeState[square] != square[0]) return false;
+    if (cubeState[square] !== square[0]) return false;
   }
   return true;
+};
+
+export const isInvalidState = (cubeState) => {
+  let color_counter = { U: 0, D: 0, L: 0, R: 0, F: 0, B: 0 };
+  let color_lookup = {
+    U: "white",
+    D: "yellow",
+    L: "orange",
+    R: "red",
+    F: "green",
+    B: "blue",
+  };
+
+  for (let square in cubeState) {
+    let square_color = cubeState[square];
+    if (square_color === undefined) {
+      return "One or more squares were left blank. To resolve this, please make sure all squares are filled in.";
+    }
+
+    color_counter[square_color] += 1;
+  }
+
+  // if cube doesn't have 9 of each color then it's an invalid rubiks cube
+  for (let color in color_counter) {
+    if (color_counter[color] !== 9) {
+      return `Currently, there are ${color_counter[color]} ${color_lookup[color]} squares on the Rubik's Cube. To resolve this, please ensure that exactly 9 ${color_lookup[color]} squares are filled in.`;
+    }
+  }
+  return "valid";
 };

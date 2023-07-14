@@ -3,19 +3,22 @@ import { Link } from "react-router-dom";
 import styles from "../styles/Header.module.css";
 import { ReactComponent as GithubSVG } from "../images/github.svg";
 
-const handlePageNavigation = (nav_page, cur_page, nav_allowed, setPage) => {
-  if (cur_page === nav_page) return;
+export default function Header({
+  curPage,
+  setPage,
+  navAllowed,
+  statusMessage,
+}) {
+  const handlePageNavigation = (nav_page) => {
+    if (curPage === nav_page) return;
 
-  if (nav_allowed) {
-    setPage(nav_page);
-  } else {
-    alert(
-      "Rubik's cube has blank sqaures, make sure you color the remaining squares or reset cube to continue."
-    );
-  }
-};
+    if (statusMessage !== "valid") {
+      alert(`Rubik's cube is not valid. ${statusMessage}`);
+    } else {
+      setPage(nav_page);
+    }
+  };
 
-export default function Header({ curPage, setPage, navAllowed }) {
   return (
     <nav className={styles["header"]}>
       <ul className={styles["header-text"]}>
